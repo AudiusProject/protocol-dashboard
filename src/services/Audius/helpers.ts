@@ -112,7 +112,6 @@ export function getWei(amount: BigNumber) {
 }
 
 export async function getNodeVersion(endpoint: string): Promise<string> {
-  // const version = await fetch(`${endpoint}/health_check`).then(res => res.json()).then(r => r.data.version)
-  const version = '0.3.1'
+  const version = await fetch(`${endpoint}/health_check`).then(res => res.json()).then(r => r.data.version)
   return version
 }
