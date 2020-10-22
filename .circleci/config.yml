@@ -116,7 +116,7 @@ workflows:
             - build-staging
           filters:
             branches:
-              only: /^master$/
+              only: /^main$/
       - build-prod:
           requires:
             - init
@@ -126,12 +126,12 @@ workflows:
             - build-prod
           filters:
             branches:
-              only: /^master$/
+              only: /^main$/
       - deploy-prod:
           context: Audius Client
           requires:
             - hold-deploy-prod
           filters:
             branches:
-              only: /^master$/
+              only: /^main$/
 
