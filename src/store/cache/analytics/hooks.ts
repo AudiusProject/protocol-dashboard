@@ -114,9 +114,7 @@ const joinTimeSeriesDatasets = (datasets: TimeSeriesRecord[][]) => {
   const joined: TimeSeriesRecord[] = []
 
   // Joined dataset should be of length "max" of each child dataset
-  const maxLength = Math.max(
-    ...datasets.map(d => d.length)
-  )
+  const maxLength = Math.max(...datasets.map(d => d.length))
   for (let i = 0; i < maxLength; ++i) {
     const { timestamp } = datasets[0][i]
     let count: number = 0
