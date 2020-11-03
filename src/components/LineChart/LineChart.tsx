@@ -270,20 +270,16 @@ const LineChart: React.FC<LineChartProps> = ({
         )}
       </div>
       <div className={styles.chart}>
-        {
-        error
-          ? <Error text='Incomplete Data' />
-          :(
-            data && labels ? (
-              <Line
-                data={getData(data, labels)}
-                options={getOptions(title, dateFormatter, tooltipTitle)}
-              />
-            ) : (
-              <Loading className={styles.loading} />
-            )
-          )
-        }
+        {error ? (
+          <Error text="Incomplete Data" />
+        ) : data && labels ? (
+          <Line
+            data={getData(data, labels)}
+            options={getOptions(title, dateFormatter, tooltipTitle)}
+          />
+        ) : (
+          <Loading className={styles.loading} />
+        )}
       </div>
     </Paper>
   )

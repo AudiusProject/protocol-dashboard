@@ -16,18 +16,17 @@ type StatProps = OwnProps
 const Stat: React.FC<StatProps> = ({ stat, label, error }) => {
   return (
     <Paper className={styles.container}>
-      {
-        error
-        ? <div className={styles.stat}><Error text='Incomplete Data' /></div>
-        : 
-          stat !== null ? (
-            <div className={styles.stat}>{stat}</div>
-          ) : (
-            <div className={styles.loadingContainer}>
-              <Loading className={styles.loading} />
-            </div>
-          )
-      }
+      {error ? (
+        <div className={styles.stat}>
+          <Error text="Incomplete Data" />
+        </div>
+      ) : stat !== null ? (
+        <div className={styles.stat}>{stat}</div>
+      ) : (
+        <div className={styles.loadingContainer}>
+          <Loading className={styles.loading} />
+        </div>
+      )}
       <div className={styles.label}>{label}</div>
     </Paper>
   )

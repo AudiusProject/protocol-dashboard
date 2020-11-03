@@ -49,10 +49,16 @@ export const initialState: State = {
 }
 
 type SetApiCalls = { metric: TimeSeriesRecord[] | MetricError; bucket: Bucket }
-type SetTotalStaked = { metric: TimeSeriesRecord[] | MetricError; bucket: Bucket }
+type SetTotalStaked = {
+  metric: TimeSeriesRecord[] | MetricError
+  bucket: Bucket
+}
 type SetPlays = { metric: TimeSeriesRecord[] | MetricError; bucket: Bucket }
 type SetTopApps = { metric: CountRecord | MetricError; bucket: Bucket }
-type SetTrailingTopGenres = { metric: CountRecord | MetricError; bucket: Bucket }
+type SetTrailingTopGenres = {
+  metric: CountRecord | MetricError
+  bucket: Bucket
+}
 type SetTrailingApiCalls = { metric: CountRecord | MetricError; bucket: Bucket }
 
 const slice = createSlice({

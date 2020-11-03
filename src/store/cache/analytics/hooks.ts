@@ -135,38 +135,32 @@ const joinTimeSeriesDatasets = (datasets: TimeSeriesRecord[][]) => {
 
 // -------------------------------- Selectors  ---------------------------------
 export const getApiCalls = (state: AppState, { bucket }: { bucket: Bucket }) =>
-  state.cache.analytics.apiCalls
-    ? (state.cache.analytics.apiCalls[bucket])
-    : null
+  state.cache.analytics.apiCalls ? state.cache.analytics.apiCalls[bucket] : null
 export const getTotalStaked = (
   state: AppState,
   { bucket }: { bucket: Bucket }
 ) =>
   state.cache.analytics.totalStaked
-    ? (state.cache.analytics.totalStaked[bucket])
+    ? state.cache.analytics.totalStaked[bucket]
     : null
 export const getPlays = (state: AppState, { bucket }: { bucket: Bucket }) =>
-  state.cache.analytics.plays
-    ? (state.cache.analytics.plays[bucket])
-    : null
+  state.cache.analytics.plays ? state.cache.analytics.plays[bucket] : null
 export const getTrailingApiCalls = (
   state: AppState,
   { bucket }: { bucket: Bucket }
 ) =>
   state.cache.analytics.trailingApiCalls
-    ? (state.cache.analytics.trailingApiCalls[bucket])
+    ? state.cache.analytics.trailingApiCalls[bucket]
     : null
 export const getTrailingTopGenres = (
   state: AppState,
   { bucket }: { bucket: Bucket }
 ) =>
   state.cache.analytics.trailingTopGenres
-    ? (state.cache.analytics.trailingTopGenres[bucket])
+    ? state.cache.analytics.trailingTopGenres[bucket]
     : null
 export const getTopApps = (state: AppState, { bucket }: { bucket: Bucket }) =>
-  state.cache.analytics.topApps
-    ? (state.cache.analytics.topApps[bucket])
-    : null
+  state.cache.analytics.topApps ? state.cache.analytics.topApps[bucket] : null
 
 // -------------------------------- Thunk Actions  ---------------------------------
 
