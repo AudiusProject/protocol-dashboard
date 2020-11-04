@@ -8,7 +8,7 @@ import { formatBucketText } from 'store/cache/analytics/hooks'
 import { Bucket } from 'store/cache/analytics/slice'
 import {
   formatNumber,
-  formatShortNumber,
+  formatShortNumberWithDecimal,
   getShortDate,
   getShortMonth
 } from 'utils/format'
@@ -123,7 +123,7 @@ const getOptions = (
           fontSize: 12,
           fontStyle: 'bold',
           callback: (value: any, index: any, values: any) => {
-            return formatShortNumber(value)
+            return formatShortNumberWithDecimal(value)
           }
         }
       }
