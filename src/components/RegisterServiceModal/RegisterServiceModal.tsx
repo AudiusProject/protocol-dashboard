@@ -21,11 +21,12 @@ import { useAccountUser, useAccount } from 'store/account/hooks'
 import { formatShortWallet } from 'utils/format'
 import { TICKER } from 'utils/consts'
 import { useModalControls } from 'utils/hooks'
+import BN from 'bn.js'
 
 const messages = {
   staking: `Staking Amount ${TICKER}`,
   stakingPlaceholder: `200,000 ${TICKER}`,
-  dpEndpoint: 'Discovery Provider Service Endpoint',
+  dpEndpoint: 'Discovery Node Service Endpoint',
   dpEndpointPlaceholder: 'https://discoveryprovider.audius.co',
   cnEndpoint: 'Content Node Service Endpoint',
   cnEndpointPlaceholder: 'https://contentnode.audius.co',
@@ -41,7 +42,7 @@ type OwnProps = {
 type RegisterServiceModalProps = OwnProps
 
 const tabOptions = [
-  { key: ServiceType.DiscoveryProvider, text: 'Discovery Provider' },
+  { key: ServiceType.DiscoveryProvider, text: 'Discovery Node' },
   { key: ServiceType.ContentNode, text: 'Content Node' }
 ]
 
@@ -145,7 +146,7 @@ const RegisterServiceModal: React.FC<RegisterServiceModalProps> = ({
     />
   )
 
-  const min = selectedServiceInfo?.minStake
+  const min = new BN(0) //selectedServiceInfo?.minStake
   const max = selectedServiceInfo?.maxStake
 
   return (
