@@ -17,8 +17,7 @@ export const SERVICES_TITLE = 'Services Overview'
 export const SERVICES_DISCOVERY_PROVIDER = '/services/discovery-node'
 export const SERVICES_DISCOVERY_PROVIDER_TITLE = 'Discovery Node'
 
-export const SERVICES_DISCOVERY_PROVIDER_NODE =
-  '/services/discovery-node/:spID'
+export const SERVICES_DISCOVERY_PROVIDER_NODE = '/services/discovery-node/:spID'
 export const SERVICES_DISCOVERY_PROVIDER_NODE_TITLE = 'Service'
 
 export const SERVICES_CONTENT = '/services/content-node'
