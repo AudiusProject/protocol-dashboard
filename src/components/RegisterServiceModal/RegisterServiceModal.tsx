@@ -21,13 +21,12 @@ import { useAccountUser, useAccount } from 'store/account/hooks'
 import { formatShortWallet } from 'utils/format'
 import { TICKER } from 'utils/consts'
 import { useModalControls } from 'utils/hooks'
-import BN from 'bn.js'
 
 const messages = {
   staking: `Staking Amount ${TICKER}`,
   stakingPlaceholder: `200,000 ${TICKER}`,
   dpEndpoint: 'Discovery Node Service Endpoint',
-  dpEndpointPlaceholder: 'https://discoveryprovider.audius.co',
+  dpEndpointPlaceholder: 'https://discoverynode.audius.co',
   cnEndpoint: 'Content Node Service Endpoint',
   cnEndpointPlaceholder: 'https://contentnode.audius.co',
   delegate: 'Delegate Owner Wallet',
@@ -146,7 +145,7 @@ const RegisterServiceModal: React.FC<RegisterServiceModalProps> = ({
     />
   )
 
-  const min = new BN(0) //selectedServiceInfo?.minStake
+  const min = selectedServiceInfo?.minStake
   const max = selectedServiceInfo?.maxStake
 
   return (
