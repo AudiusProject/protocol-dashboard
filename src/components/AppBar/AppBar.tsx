@@ -32,9 +32,15 @@ const messages = {
 // TODO:
 // * Replace account img, wallet & tokens from store
 type UserAccountSnippetProps = { wallet: Address }
-type MisconfiguredProps = { isAccountMisconfigured: boolean, isMisconfigured: boolean }
+type MisconfiguredProps = {
+  isAccountMisconfigured: boolean
+  isMisconfigured: boolean
+}
 
-const Misconfigured = ({ isAccountMisconfigured, isMisconfigured }: MisconfiguredProps) => {
+const Misconfigured = ({
+  isAccountMisconfigured,
+  isMisconfigured
+}: MisconfiguredProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const onClick = useCallback(() => setIsOpen(true), [setIsOpen])
   const onClose = useCallback(() => setIsOpen(false), [setIsOpen])
@@ -42,12 +48,17 @@ const Misconfigured = ({ isAccountMisconfigured, isMisconfigured }: Misconfigure
   const onClickHandler = isMisconfigured ? undefined : onClick
   return (
     <>
-      <div onClick={onClickHandler} className={clsx(styles.connectMetaMaskContainer, {
-        [styles.misconfigured]: isMisconfigured
-      })}>
+      <div
+        onClick={onClickHandler}
+        className={clsx(styles.connectMetaMaskContainer, {
+          [styles.misconfigured]: isMisconfigured
+        })}
+      >
         <div className={styles.connectMetaMaskDot}></div>
         <div className={styles.connectMetaMask}>
-          {isMisconfigured ? messages.metaMaskMisconfigured : messages.connectMetaMask}
+          {isMisconfigured
+            ? messages.metaMaskMisconfigured
+            : messages.connectMetaMask}
         </div>
       </div>
       <ConnectMetaMaskModal isOpen={isOpen} onClose={onClose} />
@@ -127,13 +138,16 @@ const AppBar: React.FC<AppBarProps> = (props: AppBarProps) => {
             <div className={styles.title}>{messages.block}</div>
             <div className={styles.block}>{ethBlock}</div>
           </div>
-            <div className={styles.userAccountSnippetContainer}>
-             {
-               (isMisconfigured || isAccountMisconfigured)
-                ? <Misconfigured isMisconfigured={isMisconfigured} isAccountMisconfigured={isAccountMisconfigured} />
-                : isLoggedIn && wallet && <UserAccountSnippet wallet={wallet} />
-             }
-            </div>
+          <div className={styles.userAccountSnippetContainer}>
+            {isMisconfigured || isAccountMisconfigured ? (
+              <Misconfigured
+                isMisconfigured={isMisconfigured}
+                isAccountMisconfigured={isAccountMisconfigured}
+              />
+            ) : (
+              isLoggedIn && wallet && <UserAccountSnippet wallet={wallet} />
+            )}
+          </div>
           <LaunchTheAppButton />
         </div>
       )}
