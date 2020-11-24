@@ -56,6 +56,24 @@ const BUCKET_TO_TEXT_FORMAT = {
   [Bucket.DAY]: 'Today'
 }
 
+const performWithFallback = async <T>(work: () => Promise<T>, fallback: () => Promise<T>): Promise<T> => {
+  try {
+    console.log("Trying work")
+    const res = await work()
+    return res
+  } catch (e) {
+    console.log('Work failed, doing fallback...')
+  }
+
+  try {
+    console.log("Trying fallback...")
+    const fall = await fallback()
+    return fall
+  } catch (e) {
+    throw e
+  }
+}
+
 export const formatBucketText = (bucket: string) =>
   BUCKET_TO_TEXT_FORMAT[bucket as Bucket]
 
@@ -178,9 +196,10 @@ async function fetchTimeSeries(
 ) {
   const startTime = getStartTime(bucket)
   let error = false
+  const nodez = [{ endpoint: 'http://localhost:5000'}]
   const datasets = (
     await Promise.all(
-      nodes.map(async node => {
+      nodez.map(async node => {
         try {
           const bucket_size = BUCKET_GRANULARITY_MAP[bucket]
           const url = `${node.endpoint}/v1/metrics/${route}?bucket_size=${bucket_size}&start_time=${startTime}`
@@ -281,23 +300,42 @@ export function fetchTotalStaked(
   }
 }
 
+const getTrailingAPI = (endpoint: string) => async () => {
+  const url = `${endpoint}/v1/metrics/routes/trailing/month`
+  const res = await (await fetch(url)).json()
+  return {
+    count: res?.data?.count ?? 0,
+    unique_count: res?.data?.unique_count ?? 0
+  } as CountRecord
+}
+
+const getTrailingAPIFallback = (endpoint: string, startTime: number) => async () => {
+  const url = `${endpoint}/v1/metrics/routes?bucket_size=century&start_time=${startTime}`
+  const res = await (await fetch(url)).json()
+  return {
+    count: res?.data?.[0]?.count ?? 0,
+    unique_count: res?.data?.[0]?.unique_count ?? 0
+  } as CountRecord
+}
+
 export function fetchTrailingApiCalls(
+
   bucket: Bucket,
   nodes: DiscoveryProvider[]
 ): ThunkAction<void, AppState, Audius, Action<string>> {
   return async (dispatch, getState, aud) => {
     const startTime = getStartTime(bucket)
     let error = false
+    let nodes = [{ endpoint: 'http://localhost:5000'}]
     const datasets = (
       await Promise.all(
         nodes.map(async node => {
           try {
-            const url = `${node.endpoint}/v1/metrics/routes?bucket_size=century&start_time=${startTime}`
-            const res = await (await fetch(url)).json()
-            return {
-              count: res?.data?.[0]?.count ?? 0,
-              unique_count: res?.data?.[0]?.unique_count ?? 0
-            } as CountRecord
+            const res = await performWithFallback(
+              getTrailingAPI(node.endpoint),
+              getTrailingAPIFallback(node.endpoint, startTime)
+            )
+            return res
           } catch (e) {
             console.error(e)
             error = true
@@ -316,6 +354,28 @@ export function fetchTrailingApiCalls(
   }
 }
 
+const getTrailingTopApps = (endpoint: string, bucket: Bucket, limit: number) => async () => {
+  const bucketPaths: { [bucket: string]: string | undefined} = {
+    [Bucket.WEEK]: "week",
+    [Bucket.MONTH]: "month",
+    [Bucket.ALL_TIME]: "all_time"
+  }
+  const bucketPath = bucketPaths[bucket]
+  if (!bucketPath) throw new Error("Invalid bucket")
+  const url = `${endpoint}/v1/metrics/app_name/trailing/${bucketPath}?limit=${limit}`
+  const res = await (await fetch(url)).json()
+  if (!res.data) return {}
+  return res
+}
+
+
+const getTopAppsLegacy = (endpoint: string, startTime: number, limit: number) => async () => {
+  const url = `${endpoint}/v1/metrics/app_name?start_time=${startTime}&limit=${limit}&include_unknown=true`
+  const res = await (await fetch(url)).json()
+  if (!res.data) return {}
+  return res
+}
+
 export function fetchTopApps(
   bucket: Bucket,
   nodes: DiscoveryProvider[]
@@ -327,9 +387,21 @@ export function fetchTopApps(
     const datasets = (
       await Promise.all(
         nodes.map(async node => {
+          // TODO: delete me
+          const endpoint = 'http://localhost:5000'
           try {
-            const url = `${node.endpoint}/v1/metrics/app_name?start_time=${startTime}&limit=${limit}&include_unknown=true`
-            const res = await (await fetch(url)).json()
+            const res = await performWithFallback(
+              getTrailingTopApps(
+                endpoint,
+                bucket,
+                limit
+              ),
+              getTopAppsLegacy(
+                endpoint,
+                startTime,
+                limit
+              )
+            )
             if (!res.data) return {}
             let apps: CountRecord = {}
             res.data.forEach((app: { name: string; count: number }) => {
