@@ -24,6 +24,7 @@ import { useDiscoveryProviders } from '../discoveryProvider/hooks'
 import { useAverageBlockTime, useEthBlockNumber } from '../protocol/hooks'
 import { weiAudToAud } from 'utils/numeric'
 import { ELECTRONIC_SUB_GENRES } from './genres'
+import { performWithFallback } from 'utils/performWithFallback'
 
 dayjs.extend(duration)
 
@@ -56,24 +57,6 @@ const BUCKET_TO_TEXT_FORMAT = {
   [Bucket.DAY]: 'Today'
 }
 
-const performWithFallback = async <T>(work: () => Promise<T>, fallback: () => Promise<T>): Promise<T> => {
-  try {
-    console.log("Trying work")
-    const res = await work()
-    return res
-  } catch (e) {
-    console.log('Work failed, doing fallback...')
-  }
-
-  try {
-    console.log("Trying fallback...")
-    const fall = await fallback()
-    return fall
-  } catch (e) {
-    throw e
-  }
-}
-
 export const formatBucketText = (bucket: string) =>
   BUCKET_TO_TEXT_FORMAT[bucket as Bucket]
 
@@ -81,8 +64,9 @@ export const formatBucketText = (bucket: string) =>
  * Calculates the query start time for a given bucket
  * Note: we round to the start of the hour to help with caching
  * @param bucket
+ * @param clampDays clamp to the nearest day so the oldest day has complete data
  */
-const getStartTime = (bucket: Bucket) => {
+const getStartTime = (bucket: Bucket, clampDays: boolean = false) => {
   switch (bucket) {
     case Bucket.ALL_TIME:
       return dayjs()
@@ -97,12 +81,12 @@ const getStartTime = (bucket: Bucket) => {
     case Bucket.MONTH:
       return dayjs()
         .subtract(1, 'month')
-        .startOf('hour')
+        .startOf(clampDays ? 'day' : 'hour')
         .unix()
     case Bucket.WEEK:
       return dayjs()
         .subtract(1, 'week')
-        .startOf('hour')
+        .startOf(clampDays ? 'day' : 'hour')
         .unix()
     case Bucket.DAY:
       return dayjs()
@@ -192,9 +176,10 @@ export const getTopApps = (state: AppState, { bucket }: { bucket: Bucket }) =>
 async function fetchTimeSeries(
   route: string,
   bucket: Bucket,
-  nodes: DiscoveryProvider[]
+  nodes: DiscoveryProvider[],
+  clampDays: boolean = true
 ) {
-  const startTime = getStartTime(bucket)
+  const startTime = getStartTime(bucket, clampDays)
   let error = false
   const nodez = [{ endpoint: 'http://localhost:5000'}]
   const datasets = (
@@ -237,7 +222,7 @@ export function fetchPlays(
   nodes: DiscoveryProvider[]
 ): ThunkAction<void, AppState, Audius, Action<string>> {
   return async (dispatch, getState, aud) => {
-    const metric = await fetchTimeSeries('plays', bucket, nodes.slice(0, 1))
+    const metric = await fetchTimeSeries('plays', bucket, nodes.slice(0, 1), true)
     dispatch(setPlays({ metric, bucket }))
   }
 }
@@ -302,31 +287,35 @@ export function fetchTotalStaked(
 
 const getTrailingAPI = (endpoint: string) => async () => {
   const url = `${endpoint}/v1/metrics/routes/trailing/month`
-  const res = await (await fetch(url)).json()
+  const res = await fetch(url)
+  if (!res.ok) throw new Error(res.statusText)
+  const json = await res.json()
   return {
-    count: res?.data?.count ?? 0,
-    unique_count: res?.data?.unique_count ?? 0
+    count: json?.data?.count ?? 0,
+    unique_count: json?.data?.unique_count ?? 0
   } as CountRecord
 }
 
 const getTrailingAPIFallback = (endpoint: string, startTime: number) => async () => {
   const url = `${endpoint}/v1/metrics/routes?bucket_size=century&start_time=${startTime}`
-  const res = await (await fetch(url)).json()
+  const res =  await fetch(url)
+  if (!res.ok) {
+    throw new Error(res.statusText)
+  }
+  const json = await res.json()
   return {
-    count: res?.data?.[0]?.count ?? 0,
-    unique_count: res?.data?.[0]?.unique_count ?? 0
+    count: json?.data?.[0]?.count ?? 0,
+    unique_count: json?.data?.[0]?.unique_count ?? 0
   } as CountRecord
 }
 
 export function fetchTrailingApiCalls(
-
   bucket: Bucket,
   nodes: DiscoveryProvider[]
 ): ThunkAction<void, AppState, Audius, Action<string>> {
   return async (dispatch, getState, aud) => {
     const startTime = getStartTime(bucket)
     let error = false
-    let nodes = [{ endpoint: 'http://localhost:5000'}]
     const datasets = (
       await Promise.all(
         nodes.map(async node => {
@@ -363,17 +352,25 @@ const getTrailingTopApps = (endpoint: string, bucket: Bucket, limit: number) => 
   const bucketPath = bucketPaths[bucket]
   if (!bucketPath) throw new Error("Invalid bucket")
   const url = `${endpoint}/v1/metrics/app_name/trailing/${bucketPath}?limit=${limit}`
-  const res = await (await fetch(url)).json()
-  if (!res.data) return {}
-  return res
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error(res.statusText)
+  }
+  const json = await res.json()
+  if (!json.data) return {}
+  return json
 }
 
 
 const getTopAppsLegacy = (endpoint: string, startTime: number, limit: number) => async () => {
   const url = `${endpoint}/v1/metrics/app_name?start_time=${startTime}&limit=${limit}&include_unknown=true`
-  const res = await (await fetch(url)).json()
-  if (!res.data) return {}
-  return res
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error(res.statusText)
+  }
+  const json = await res.json()
+  if (!json.data) return {}
+  return json
 }
 
 export function fetchTopApps(
@@ -387,17 +384,15 @@ export function fetchTopApps(
     const datasets = (
       await Promise.all(
         nodes.map(async node => {
-          // TODO: delete me
-          const endpoint = 'http://localhost:5000'
           try {
             const res = await performWithFallback(
               getTrailingTopApps(
-                endpoint,
+                node.endpoint,
                 bucket,
                 limit
               ),
               getTopAppsLegacy(
-                endpoint,
+                node.endpoint,
                 startTime,
                 limit
               )
