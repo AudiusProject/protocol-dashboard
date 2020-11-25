@@ -10,14 +10,14 @@ export const performWithFallback = async <T>(work: () => Promise<T>, fallback: (
     const res = await work()
     return res
   } catch (e) {
-    console.log(`Call failed, falling back. ${e.message}`)
+    console.error(`Call failed, falling back. ${e.message}`)
   }
 
   try {
     const fall = await fallback()
     return fall
   } catch (e) {
-    console.log(`Fallback failed ${e.message}`)
+    console.error(`Fallback failed ${e.message}`)
     throw e
   }
 }

@@ -181,10 +181,9 @@ async function fetchTimeSeries(
 ) {
   const startTime = getStartTime(bucket, clampDays)
   let error = false
-  const nodez = [{ endpoint: 'http://localhost:5000'}]
   const datasets = (
     await Promise.all(
-      nodez.map(async node => {
+      nodes.map(async node => {
         try {
           const bucket_size = BUCKET_GRANULARITY_MAP[bucket]
           const url = `${node.endpoint}/v1/metrics/${route}?bucket_size=${bucket_size}&start_time=${startTime}`
@@ -296,7 +295,7 @@ const getTrailingAPI = (endpoint: string) => async () => {
   } as CountRecord
 }
 
-const getTrailingAPIFallback = (endpoint: string, startTime: number) => async () => {
+const getTrailingAPILegacy = (endpoint: string, startTime: number) => async () => {
   const url = `${endpoint}/v1/metrics/routes?bucket_size=century&start_time=${startTime}`
   const res =  await fetch(url)
   if (!res.ok) {
@@ -322,7 +321,7 @@ export function fetchTrailingApiCalls(
           try {
             const res = await performWithFallback(
               getTrailingAPI(node.endpoint),
-              getTrailingAPIFallback(node.endpoint, startTime)
+              getTrailingAPILegacy(node.endpoint, startTime)
             )
             return res
           } catch (e) {
