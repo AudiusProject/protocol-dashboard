@@ -221,7 +221,12 @@ export function fetchPlays(
   nodes: DiscoveryProvider[]
 ): ThunkAction<void, AppState, Audius, Action<string>> {
   return async (dispatch, getState, aud) => {
-    const metric = await fetchTimeSeries('plays', bucket, nodes.slice(0, 1), true)
+    const metric = await fetchTimeSeries(
+      'plays',
+      bucket,
+      nodes.slice(0, 1),
+      true
+    )
     dispatch(setPlays({ metric, bucket }))
   }
 }
@@ -295,9 +300,12 @@ const getTrailingAPI = (endpoint: string) => async () => {
   } as CountRecord
 }
 
-const getTrailingAPILegacy = (endpoint: string, startTime: number) => async () => {
+const getTrailingAPILegacy = (
+  endpoint: string,
+  startTime: number
+) => async () => {
   const url = `${endpoint}/v1/metrics/routes?bucket_size=century&start_time=${startTime}`
-  const res =  await fetch(url)
+  const res = await fetch(url)
   if (!res.ok) {
     throw new Error(res.statusText)
   }
@@ -342,14 +350,18 @@ export function fetchTrailingApiCalls(
   }
 }
 
-const getTrailingTopApps = (endpoint: string, bucket: Bucket, limit: number) => async () => {
-  const bucketPaths: { [bucket: string]: string | undefined} = {
-    [Bucket.WEEK]: "week",
-    [Bucket.MONTH]: "month",
-    [Bucket.ALL_TIME]: "all_time"
+const getTrailingTopApps = (
+  endpoint: string,
+  bucket: Bucket,
+  limit: number
+) => async () => {
+  const bucketPaths: { [bucket: string]: string | undefined } = {
+    [Bucket.WEEK]: 'week',
+    [Bucket.MONTH]: 'month',
+    [Bucket.ALL_TIME]: 'all_time'
   }
   const bucketPath = bucketPaths[bucket]
-  if (!bucketPath) throw new Error("Invalid bucket")
+  if (!bucketPath) throw new Error('Invalid bucket')
   const url = `${endpoint}/v1/metrics/app_name/trailing/${bucketPath}?limit=${limit}`
   const res = await fetch(url)
   if (!res.ok) {
@@ -360,8 +372,11 @@ const getTrailingTopApps = (endpoint: string, bucket: Bucket, limit: number) => 
   return json
 }
 
-
-const getTopAppsLegacy = (endpoint: string, startTime: number, limit: number) => async () => {
+const getTopAppsLegacy = (
+  endpoint: string,
+  startTime: number,
+  limit: number
+) => async () => {
   const url = `${endpoint}/v1/metrics/app_name?start_time=${startTime}&limit=${limit}&include_unknown=true`
   const res = await fetch(url)
   if (!res.ok) {
@@ -385,16 +400,8 @@ export function fetchTopApps(
         nodes.map(async node => {
           try {
             const res = await performWithFallback(
-              getTrailingTopApps(
-                node.endpoint,
-                bucket,
-                limit
-              ),
-              getTopAppsLegacy(
-                node.endpoint,
-                startTime,
-                limit
-              )
+              getTrailingTopApps(node.endpoint, bucket, limit),
+              getTopAppsLegacy(node.endpoint, startTime, limit)
             )
             if (!res.data) return {}
             let apps: CountRecord = {}

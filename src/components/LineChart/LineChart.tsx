@@ -44,38 +44,38 @@ const getData = (data: number[], labels: string[], showLeadingDay: boolean) => {
     pointRadius: 0,
     pointHitRadius: 8
   }
-  let solidLine = (data.slice(0, -1) as (number | undefined)[])
+  let solidLine = data.slice(0, -1) as (number | undefined)[]
   if (showLeadingDay) {
     solidLine = solidLine.concat([undefined])
   }
 
-  const datasets = [{
-    ...common,
-    label: 'past',
-    data: solidLine,
-    borderDash: [] as number[]
-  }]
+  const datasets = [
+    {
+      ...common,
+      label: 'past',
+      data: solidLine,
+      borderDash: [] as number[]
+    }
+  ]
 
   if (showLeadingDay) {
     const dottedLine = new Array(Math.max(data.length - 2, 0))
       .fill(undefined)
       .concat(data.slice(-2))
 
-    datasets.push(
-      {
-        ...common,
-        label: 'current',
-        data: dottedLine,
-        borderDash: [2, 6]
-      }
-    )
+    datasets.push({
+      ...common,
+      label: 'current',
+      data: dottedLine,
+      borderDash: [2, 6]
+    })
   }
 
   const newLabels = showLeadingDay ? labels : labels.slice(0, -1)
 
   return {
     labels: newLabels,
-    datasets,
+    datasets
   }
 }
 
