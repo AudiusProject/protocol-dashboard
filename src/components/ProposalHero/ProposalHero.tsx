@@ -5,8 +5,13 @@ import VoteMeter from 'components/VoteMeter'
 import ProposalStatusBadge from 'components/ProposalStatusBadge'
 import { Proposal, Outcome, Vote, Address, Status } from 'types'
 import Button, { ButtonType } from 'components/Button'
-import { leftPadZero, formatShortAud, formatWei, getDate } from 'utils/format'
-import { getHumanReadableTime } from 'utils/format'
+import {
+  leftPadZero,
+  formatShortAud,
+  formatWei,
+  getDate,
+  getHumanReadableTime
+} from 'utils/format'
 import { ReactComponent as IconThumbUp } from 'assets/img/iconThumbUp.svg'
 import { ReactComponent as IconThumbDown } from 'assets/img/iconThumbDown.svg'
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal'
