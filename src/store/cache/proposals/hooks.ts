@@ -25,11 +25,8 @@ export const getAllProposals = (state: AppState) =>
   state.cache.proposals.allProposals
 export const getResolvedProposals = (state: AppState) => {
   const allProposals = getAllProposals(state)
-  // need to reverse the proposals to return in reverse-chronological order
   return (
-    state.cache.proposals.resolvedProposals
-      ?.map(p => allProposals[p])
-      .reverse() ?? null
+    state.cache.proposals.resolvedProposals?.map(p => allProposals[p]) ?? null
   )
 }
 export const getRecentProposals = (state: AppState) => {
