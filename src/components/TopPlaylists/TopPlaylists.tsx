@@ -26,11 +26,7 @@ const TopPlaylists: React.FC<TopPlaylistsProps> = () => {
     if (topPlaylists === MusicError.ERROR) return <Error />
     return !!topPlaylists ? (
       topPlaylists!.map((p, i) => (
-        <div
-          key={i}
-          className={styles.playlist}
-          onClick={() => goToUrl(p.url)}
-        >
+        <div key={i} className={styles.playlist} onClick={() => goToUrl(p.url)}>
           <div
             className={styles.artwork}
             style={{
@@ -53,9 +49,7 @@ const TopPlaylists: React.FC<TopPlaylistsProps> = () => {
   return (
     <Paper className={styles.container}>
       <div className={styles.title}>{messages.title}</div>
-      <div className={styles.playlists}>
-        {renderTopPlaylists()}
-      </div>
+      <div className={styles.playlists}>{renderTopPlaylists()}</div>
     </Paper>
   )
 }

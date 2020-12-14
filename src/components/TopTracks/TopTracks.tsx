@@ -52,9 +52,7 @@ const TopTracks: React.FC<TopTracksProps> = () => {
   return (
     <Paper className={styles.container}>
       <div className={styles.title}>{messages.title}</div>
-      <div className={styles.tracks}>
-        {renderTopTracks()}
-      </div>
+      <div className={styles.tracks}>{renderTopTracks()}</div>
     </Paper>
   )
 }

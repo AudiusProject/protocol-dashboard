@@ -17,9 +17,9 @@ export enum MusicError {
   ERROR = 'error'
 }
 
-type SetTopTracks = { tracks: Track[] | MusicError}
-type SetTopPlaylists = { playlists: Playlist[] | MusicError}
-type SetTopAlbums = { albums: Album[] | MusicError}
+type SetTopTracks = { tracks: Track[] | MusicError }
+type SetTopPlaylists = { playlists: Playlist[] | MusicError }
+type SetTopAlbums = { albums: Album[] | MusicError }
 
 const slice = createSlice({
   name: 'music',

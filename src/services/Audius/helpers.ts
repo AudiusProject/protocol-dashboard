@@ -114,8 +114,9 @@ export function getWei(amount: BigNumber) {
 
 export async function getNodeVersion(endpoint: string): Promise<string> {
   try {
-    const version = await fetchWithTimeout(`${endpoint}/health_check`)
-      .then(r => r.data.version)
+    const version = await fetchWithTimeout(`${endpoint}/health_check`).then(
+      r => r.data.version
+    )
     return version
   } catch (e) {
     console.error(e)

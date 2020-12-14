@@ -6,8 +6,13 @@ import AppState from 'store/types'
 import { DiscoveryProvider, Playlist, Track } from 'types'
 import { useDiscoveryProviders } from '../discoveryProvider/hooks'
 import { useEffect, useState } from 'react'
-import { MusicError, setTopAlbums, setTopPlaylists, setTopTracks } from './slice'
-import {fetchWithTimeout} from '../../../utils/fetch'
+import {
+  MusicError,
+  setTopAlbums,
+  setTopPlaylists,
+  setTopTracks
+} from './slice'
+import { fetchWithTimeout } from '../../../utils/fetch'
 
 const AUDIUS_URL = process.env.REACT_APP_AUDIUS_URL
 
@@ -59,7 +64,7 @@ export function fetchTopPlaylists(
       dispatch(setTopPlaylists({ playlists }))
     } catch (e) {
       console.error(e)
-      dispatch(setTopPlaylists({playlists: MusicError.ERROR}))
+      dispatch(setTopPlaylists({ playlists: MusicError.ERROR }))
     }
   }
 }

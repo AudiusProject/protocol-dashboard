@@ -26,11 +26,7 @@ const TopAlbums: React.FC<TopAlbumsProps> = () => {
     if (topAlbums === MusicError.ERROR) return <Error />
     return !!topAlbums ? (
       topAlbums.map((p, i) => (
-        <div
-          key={i}
-          className={styles.album}
-          onClick={() => goToUrl(p.url)}
-        >
+        <div key={i} className={styles.album} onClick={() => goToUrl(p.url)}>
           <div
             className={styles.artwork}
             onClick={() => goToUrl(p.url)}
@@ -55,9 +51,7 @@ const TopAlbums: React.FC<TopAlbumsProps> = () => {
   return (
     <Paper className={styles.container}>
       <div className={styles.title}>{messages.title}</div>
-      <div className={styles.albums}>
-        {renderTopAlbums()}
-      </div>
+      <div className={styles.albums}>{renderTopAlbums()}</div>
     </Paper>
   )
 }

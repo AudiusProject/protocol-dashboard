@@ -25,7 +25,7 @@ import { useAverageBlockTime, useEthBlockNumber } from '../protocol/hooks'
 import { weiAudToAud } from 'utils/numeric'
 import { ELECTRONIC_SUB_GENRES } from './genres'
 import { performWithFallback } from 'utils/performWithFallback'
-import {fetchWithTimeout} from '../../../utils/fetch'
+import { fetchWithTimeout } from '../../../utils/fetch'
 dayjs.extend(duration)
 
 const MONTH_IN_MS = dayjs.duration({ months: 1 }).asMilliseconds()
