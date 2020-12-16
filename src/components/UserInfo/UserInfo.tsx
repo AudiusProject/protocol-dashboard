@@ -10,12 +10,12 @@ import ConfirmTransactionModal, {
   StandaloneBox
 } from 'components/ConfirmTransactionModal'
 import { useMakeClaim } from 'store/actions/makeClaim'
-import { useAccount } from 'store/account/hooks'
+import { useAccount, useAccountUser } from 'store/account/hooks'
 import { User, Operator, Status } from 'types'
 import BN from 'bn.js'
 import useUndelegateStake from 'store/actions/undelegateStake'
 import { useModalControls } from 'utils/hooks'
-import { TICKER } from 'utils/consts'
+import { TICKER, MIN_DELEGATE_AMOUNT } from 'utils/consts'
 import { formatAud } from 'utils/format'
 
 import desktopStyles from './UserInfo.module.css'
@@ -52,6 +52,7 @@ const UserInfo = ({
   // TODO: Get Rank
   const { name, wallet, image } = user
   const { isLoggedIn } = useAccount()
+  const { user: accountUser } = useAccountUser()
   const [isOpen, setIsOpen] = useState(false)
   const onClick = useCallback(() => setIsOpen(true), [setIsOpen])
   const onClose = useCallback(() => setIsOpen(false), [setIsOpen])
@@ -113,7 +114,9 @@ const UserInfo = ({
     isDoneLoading &&
     !hasClaim &&
     delegates.isZero() &&
-    isValidBounds
+    isValidBounds &&
+    !!accountUser?.audToken.gte(MIN_DELEGATE_AMOUNT)
+
   const showUndelegate =
     isLoggedIn && !isOwner && isDoneLoading && !hasClaim && !delegates.isZero()
   const showClaim =
