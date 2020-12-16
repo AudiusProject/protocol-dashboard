@@ -81,7 +81,7 @@ const TopAddressesTable: React.FC<TopAddressesTableProps> = ({
       voteWeight,
       proposedVotes: user.voteHistory.length
     }
-  })
+  }).sort((a, b) => b.voteWeight - a.voteWeight)
 
   const renderRow = (data: TableUser) => {
     return (
