@@ -98,7 +98,7 @@ const RegisterServiceModal: React.FC<RegisterServiceModalProps> = ({
   // Our calculated min stake is the service type min stake MINUS
   // the "unused/available" stake we have in the system already.
   const calculatedMinStake = selectedServiceInfo
-    ? selectedServiceInfo.minStake.sub(availableStake)
+    ? BN.max(selectedServiceInfo.minStake.sub(availableStake), new BN('0'))
     : new BN('0')
   useEffect(() => {
     calculatedMinStakeRef.current = calculatedMinStake
