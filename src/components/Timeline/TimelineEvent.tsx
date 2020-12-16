@@ -140,7 +140,11 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
     )
   }
 
-  if ('delegator' in event && 'increaseAmount' in event && 'direction' in event) {
+  if (
+    'delegator' in event &&
+    'increaseAmount' in event &&
+    'direction' in event
+  ) {
     const received = event.direction === 'RECEIVED'
 
     const onClick = () => {
@@ -159,9 +163,11 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
         >
           {formatAud(event.increaseAmount)}
         </Tooltip>
-        {`${TICKER} ${received ? 'from': 'to'} `}
+        {`${TICKER} ${received ? 'from' : 'to'} `}
         <span className={styles.titleSpacingLeft}>
-          {formatShortWallet(received ? event.delegator : event.serviceProvider)}
+          {formatShortWallet(
+            received ? event.delegator : event.serviceProvider
+          )}
         </span>
       </span>
     )

@@ -185,9 +185,8 @@ export default class Delegate {
     const info = await this.getContract().getIncreaseDelegateStakeEvents({
       delegator
     })
-    return info.map((i: any) => ({...i, direction: 'SENT' }))
+    return info.map((i: any) => ({ ...i, direction: 'SENT' }))
   }
-
 
   async getReceiveDelegationIncreaseEvents(
     serviceProvider: Address
