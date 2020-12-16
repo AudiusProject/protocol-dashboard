@@ -72,7 +72,13 @@ type WaitingTransactionProps = {
 
 const WaitingTransaction: React.FC<WaitingTransactionProps> = props => {
   const { isOpen, onClick, onClose } = useModalControls()
-  const { status, error, setError, setStatus, cancelTransaction } = useCancelTransaction(props.name)
+  const {
+    status,
+    error,
+    setError,
+    setStatus,
+    cancelTransaction
+  } = useCancelTransaction(props.name)
 
   const onCloseModal = useCallback(() => {
     setStatus(undefined)
