@@ -248,6 +248,8 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
     )
   }
 
+  // stake actions can be
+  // increases, decreases requested/evaluated/(eventually cancelled)
   if ('stakeAction' in event) {
     // TODO: need to handle cancel still
 
@@ -258,6 +260,7 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
 
     const onClick = () => {
       if (parentOnClick) parentOnClick()
+      // do nothing for stake actions
     }
     const header =
       action === INCREASE
