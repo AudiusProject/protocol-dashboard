@@ -76,7 +76,7 @@ export const useTimeline = (wallet: Address) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!timeline) {
+    if (wallet && !timeline) {
       dispatch(fetchTimeline(wallet))
     }
   }, [dispatch, wallet, timeline])
