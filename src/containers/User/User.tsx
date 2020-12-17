@@ -84,7 +84,6 @@ const UserPage: React.FC<UserPageProps> = (props: UserPageProps) => {
       replaceRoute(accountPage(wallet))
   }, [status, wallet, pathname, isServiceProvider, replaceRoute])
 
-  // if (status !== Status.Success) return null
   const services =
     ((user as Operator)?.discoveryProviders?.length ?? 0) +
     ((user as Operator)?.contentNodes?.length ?? 0)
