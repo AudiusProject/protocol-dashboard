@@ -144,11 +144,12 @@ const UserPage: React.FC<UserPageProps> = (props: UserPageProps) => {
           className={styles.delegatorsContainer}
         />
       )}
-      {user &&
-      <DelegatesTable
-        wallet={user.wallet}
-        className={styles.delegatesContainer}
-      />}
+      {user && (
+        <DelegatesTable
+          wallet={user.wallet}
+          className={styles.delegatesContainer}
+        />
+      )}
       <div className={styles.serviceContainer}>
         {hasDiscoveryProviders && (
           <DiscoveryTable

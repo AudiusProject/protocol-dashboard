@@ -207,16 +207,16 @@ export const useTimeRemaining = (block: number, period: number | null) => {
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeRemaining(timeRemaining => {
-          if (timeRemaining !== null) {
-            if (timeRemaining === 0) return 0
-            if (timeRemaining > 1000) {
-              return timeRemaining - 1000
-            }
-            return timeRemaining
+        if (timeRemaining !== null) {
+          if (timeRemaining === 0) return 0
+          if (timeRemaining > 1000) {
+            return timeRemaining - 1000
           }
-          return null
-        })
-      }, 1000)
+          return timeRemaining
+        }
+        return null
+      })
+    }, 1000)
     return () => clearInterval(interval)
   }, [setTimeRemaining])
 

@@ -188,14 +188,12 @@ const UserInfo = ({
 
 const UserInfoContainer = (props: UserInfoProps) => {
   return (
-    <Paper className={clsx(styles.userInfo, { [props.className!]: !!props.className })}>
-      {
-        props.status !== Status.Success
-          ? <Loading />
-          : <UserInfo
-            {...props}
-          />
-      }
+    <Paper
+      className={clsx(styles.userInfo, {
+        [props.className!]: !!props.className
+      })}
+    >
+      {props.status !== Status.Success ? <Loading /> : <UserInfo {...props} />}
     </Paper>
   )
 }

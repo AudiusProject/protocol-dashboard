@@ -28,10 +28,10 @@ const UserStakedStat: React.FC<UserStakedStatProps> = (
 ) => {
   return (
     <Paper className={styles.stakedContainer}>
-      {
-        props.isLoading
-        ? <Loading />
-        : <>
+      {props.isLoading ? (
+        <Loading />
+      ) : (
+        <>
           {props.totalDelegatesStatus !== Status.Success ? null : (
             <Tooltip
               position={Position.TOP}
@@ -44,7 +44,7 @@ const UserStakedStat: React.FC<UserStakedStatProps> = (
           <div className={styles.label}>{TICKER}</div>
           <div className={styles.description}>{messages.delegated}</div>
         </>
-      }
+      )}
     </Paper>
   )
 }
