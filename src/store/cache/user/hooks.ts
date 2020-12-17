@@ -210,15 +210,18 @@ function fetchUsers(): ThunkAction<void, AppState, Audius, Action<string>> {
     )
 
     // Get all delegators that are not service operators
-    let delegators = Object.keys(users).reduce((delgators: string[], operatorWallet) => {
-      const operator = users[operatorWallet]
-      const operatorDelegators = (operator as Operator).delegators
-        .map((delegator) => delegator.wallet)
-        .filter(wallet => !(wallet in users))
-      return delgators.concat(operatorDelegators)
-    }, [])
+    let delegators = Object.keys(users).reduce(
+      (delgators: string[], operatorWallet) => {
+        const operator = users[operatorWallet]
+        const operatorDelegators = (operator as Operator).delegators
+          .map(delegator => delegator.wallet)
+          .filter(wallet => !(wallet in users))
+        return delgators.concat(operatorDelegators)
+      },
+      []
+    )
     // @ts-ignore
-    delegators = [...(new Set(delegators))]
+    delegators = [...new Set(delegators)]
 
     await Promise.all(
       delegators.map(async wallet => {
@@ -226,7 +229,6 @@ function fetchUsers(): ThunkAction<void, AppState, Audius, Action<string>> {
         users[wallet] = user
       })
     )
-
 
     dispatch(
       setUsers({
