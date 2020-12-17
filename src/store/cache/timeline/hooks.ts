@@ -62,23 +62,8 @@ export function fetchTimeline(
       aud.ServiceProviderClient.getRegisteredServiceProviderEvents(wallet),
       aud.ServiceProviderClient.getDeregisteredServiceProviderEvents(wallet),
       aud.ServiceProviderClient.getIncreasedStakeEvents(wallet),
-      aud.ServiceProviderClient.getDecreasedStakeRequestedEvents(wallet),
+      aud.ServiceProviderClient.getDecreasedStakeRequestedEvents(wallet)
     ])
-
-    // const increases = await aud.ServiceProviderClient.getIncreasedStakeEvents(wallet)
-    // const decreases = await aud.ServiceProviderClient.getDecreasedStakeEvaluatedEvents(wallet)
-    // const decreaseRequested = await aud.ServiceProviderClient.getDecreasedStakeRequestedEvents(wallet)
-    // console.log({increases, decreases, decreaseRequested})
-
-    // TODO: if I get around to these
-    const decreases = await aud.Delegate.getReceiveDelegateDecreaseStakeEvents(wallet)
-    const decreaseRequested = await aud.Delegate.getUndelegateStakeRequestedEvents(wallet)
-    console.log({decreases, decreaseRequested})
-
-
-    // const registerEvents = await aud.ServiceProviderClient.getRegisteredServiceProviderEvents(wallet)
-    // const deregisteredEvents = await aud.ServiceProviderClient.getDeregisteredServiceProviderEvents(wallet)
-    // console.log({registerEvents})
 
     const timeline = combineEvents(...events).reverse()
     dispatch(setTimeline({ wallet, timeline }))

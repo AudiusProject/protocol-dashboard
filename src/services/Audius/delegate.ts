@@ -225,7 +225,10 @@ export default class Delegate {
     const info = await this.getContract().getUndelegateStakeRequestedEvents({
       serviceProvider
     })
-    return info.map((event: any) => ({...event, undelegationStep: "requested"}))
+    return info.map((event: any) => ({
+      ...event,
+      undelegationStep: 'requested'
+    }))
   }
 
   async getClaimEvents(

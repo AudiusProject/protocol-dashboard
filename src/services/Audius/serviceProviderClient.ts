@@ -215,18 +215,20 @@ export default class ServiceProviderClient {
     })
     return events.map((event: any) => ({
       ...event,
-      registrationAction: "register"
+      registrationAction: 'register'
     }))
   }
 
   async getDeregisteredServiceProviderEvents(wallet: Address): Promise<any> {
     await this.aud.hasPermissions()
-    const events = await this.getContract().getDeregisteredServiceProviderEvents({
-      owner: wallet
-    })
+    const events = await this.getContract().getDeregisteredServiceProviderEvents(
+      {
+        owner: wallet
+      }
+    )
     return events.map((event: any) => ({
       ...event,
-      registrationAction: "deregister"
+      registrationAction: 'deregister'
     }))
   }
 
@@ -237,7 +239,7 @@ export default class ServiceProviderClient {
     })
     return events.map((event: any) => ({
       ...event,
-      stakeAction: "increase"
+      stakeAction: 'increase'
     }))
   }
 
@@ -248,7 +250,7 @@ export default class ServiceProviderClient {
     })
     return events.map((event: any) => ({
       ...event,
-      stakeAction: "decreaseEvaluated"
+      stakeAction: 'decreaseEvaluated'
     }))
   }
 
@@ -259,7 +261,7 @@ export default class ServiceProviderClient {
     })
     return events.map((event: any) => ({
       ...event,
-      stakeAction: "decreaseRequested"
+      stakeAction: 'decreaseRequested'
     }))
   }
 
