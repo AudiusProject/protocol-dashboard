@@ -208,6 +208,16 @@ export default class Delegate {
     return info
   }
 
+  async getReceiveDelegateDecreaseStakeEvents(
+    serviceProvider: Address
+  ): Promise<Array<DecreaseDelegateStakeEvent>> {
+    await this.aud.hasPermissions()
+    const info = await this.getContract().getDecreaseDelegateStakeEvents({
+      serviceProvider
+    })
+    return info
+  }
+
   async getClaimEvents(
     claimer: Address
   ): Promise<

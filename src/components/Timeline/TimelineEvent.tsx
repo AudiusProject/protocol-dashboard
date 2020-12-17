@@ -7,7 +7,7 @@ import Proposal from 'components/Proposal'
 import { useBlock } from 'store/cache/protocol/hooks'
 import { getDate, formatWei, formatAud, formatShortWallet } from 'utils/format'
 import { usePushRoute } from 'utils/effects'
-import { accountPage } from 'utils/routes'
+import { accountPage, contentNodePage, discoveryNodePage } from 'utils/routes'
 import { TICKER } from 'utils/consts'
 import Tooltip, { Position } from 'components/Tooltip'
 
@@ -202,6 +202,34 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
         <span className={styles.titleSpacingLeft}>
           {formatShortWallet(event.serviceProvider)}
         </span>
+      </span>
+    )
+    return (
+      <GenericTimelineEvent
+        onClick={onClick}
+        className={className}
+        header={header}
+        title={title}
+        blockNumber={event.blockNumber}
+      />
+    )
+  }
+
+  if ('registrationAction' in event) {
+    // did it register or deregister?
+    const didRegister = event.registrationAction === "register"
+
+    // is it discovery-node or creator-node
+    const isDiscovery = event.serviceType in ["discovery-node", "discovery-provider"]
+    const onClick = () => {
+      if (parentOnClick) parentOnClick()
+      const route = isDiscovery ? discoveryNodePage(event.spID) : contentNodePage(event.spID)
+      pushRoute(route)
+    }
+    const header = didRegister ? 'REGISTERED SERVICE' : 'DEREGISTERED SERVICE'
+    const title = (
+      <span className={styles.titleContainer}>
+        {`${didRegister ? "Registered" : "Deregistered"} ${event.serviceType} at ${event.endpoint}`}
       </span>
     )
     return (

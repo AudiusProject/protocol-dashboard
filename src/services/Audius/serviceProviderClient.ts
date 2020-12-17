@@ -208,6 +208,30 @@ export default class ServiceProviderClient {
     return info
   }
 
+  async getRegisteredServiceProviderEvents(wallet: Address): Promise<any> {
+    await this.aud.hasPermissions()
+    const events = await this.getContract().getRegisteredServiceProviderEvents({
+      owner: wallet
+    })
+    console.log({events})
+    return events.map((event: any) => ({
+      ...event,
+      registrationAction: "register"
+    }))
+  }
+
+  async getDeregisteredServiceProviderEvents(wallet: Address): Promise<any> {
+    await this.aud.hasPermissions()
+    const events = await this.getContract().getDeregisteredServiceProviderEvents({
+      owner: wallet
+    })
+    console.log({events})
+    return events.map((event: any) => ({
+      ...event,
+      registrationAction: "deregister"
+    }))
+  }
+
   /* -------------------- Service Provider Write -------------------- */
 
   async registerWithDelegate(
