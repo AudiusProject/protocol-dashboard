@@ -218,6 +218,16 @@ export default class Delegate {
     return info
   }
 
+  async getUndelegateStakeRequestedEvents(
+    serviceProvider: Address
+  ): Promise<Array<any>> {
+    await this.aud.hasPermissions()
+    const info = await this.getContract().getUndelegateStakeRequestedEvents({
+      serviceProvider
+    })
+    return info.map((event: any) => ({...event, undelegationStep: "requested"}))
+  }
+
   async getClaimEvents(
     claimer: Address
   ): Promise<
