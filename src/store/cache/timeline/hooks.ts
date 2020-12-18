@@ -75,11 +75,6 @@ export function fetchTimeline(
       aud.Delegate.getUndelegateStakeCancelledEvents(filter)
     ])
 
-    console.log({timelineType})
-
-    // const decreaseRequestSP = await aud.Delegate.getReceiveDelegateDecreaseStakeEvents(wallet)
-    // console.log({ decreaseRequestSP })
-
     const timeline = combineEvents(...events).reverse()
     dispatch(setTimeline({ wallet, timeline }))
   }
