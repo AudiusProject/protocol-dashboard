@@ -20,7 +20,6 @@ import desktopStyles from './TimelineEvent.module.css'
 import mobileStyles from './TimelineEventMobile.module.css'
 import { createStyles } from 'utils/mobile'
 import { TimelineType } from 'store/cache/timeline/hooks'
-import cn from 'classnames'
 
 const styles = createStyles({ desktopStyles, mobileStyles })
 
