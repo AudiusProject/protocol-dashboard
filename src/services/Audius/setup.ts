@@ -49,7 +49,6 @@ const getMetamaskIsOnEthMainnet = async () => {
   return metamaskWeb3Network === ethNetworkId
 }
 
-
 export async function setup(this: AudiusClient): Promise<void> {
   if (!window.web3 || !window.ethereum) {
     // Metamask is not installed
