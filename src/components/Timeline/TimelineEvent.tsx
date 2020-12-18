@@ -222,16 +222,15 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
 
     // Text looks like
     // Evaluated:
-    //  Delegator: Decreased delegation X Audio To SP-Y
-    //  SP: Delegator X decreased delegation by X Audio
+    //  Delegator: Decreased delegation X Audio To SP Y
+    //  SP: Delegator X decreased delegation by Y Audio
     // Requested:
-    //  Delegator: Requested to decrease delegation to SP-Y by X Audio
+    //  Delegator: Requested to decrease delegation to SP Y by X Audio
     //  SP: Delegator X requested to decrease delegation by Y Audio
     // Cancelled:
-    //  Delegator: Cancelled request to decrease delegation To SP-Y by X Audio'
+    //  Delegator: Cancelled request to decrease delegation To SP Y by X Audio'
     //  SP: Delegator X cancelled requested to decrease delegation by Y Audio
 
-    console.log({ event })
     const bodyMap = {
       evaluated: {
         Delegator: (
