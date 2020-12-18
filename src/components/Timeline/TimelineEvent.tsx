@@ -7,7 +7,12 @@ import Proposal from 'components/Proposal'
 import { useBlock } from 'store/cache/protocol/hooks'
 import { getDate, formatWei, formatAud, formatShortWallet } from 'utils/format'
 import { usePushRoute } from 'utils/effects'
-import { accountPage, contentNodePage, discoveryNodePage, operatorPage } from 'utils/routes'
+import {
+  accountPage,
+  contentNodePage,
+  discoveryNodePage,
+  operatorPage
+} from 'utils/routes'
 import { TICKER } from 'utils/consts'
 import Tooltip, { Position } from 'components/Tooltip'
 
@@ -192,23 +197,26 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
 
     // headers indexed by stage + userType
     const headersMap = {
-      "evaluated": {
-        "Delegator": "UNDELEGATED",
-        "ServiceProvider": "UNDELEGATION"
+      evaluated: {
+        Delegator: 'UNDELEGATED',
+        ServiceProvider: 'UNDELEGATION'
       },
-      "cancelled": {
-        "Delegator": "UNDELEGATE REQUEST CANCELLED",
-        "ServiceProvider": "UNDELEGATION REQUEST CANCELLED"
+      cancelled: {
+        Delegator: 'UNDELEGATE REQUEST CANCELLED',
+        ServiceProvider: 'UNDELEGATION REQUEST CANCELLED'
       },
-      "requested": {
-        "Delegator": "UNDELEGATE REQUESTED",
-        "ServiceProvider": "UNDELEGATION REQUESTED"
-      },
+      requested: {
+        Delegator: 'UNDELEGATE REQUESTED',
+        ServiceProvider: 'UNDELEGATION REQUESTED'
+      }
     }
 
     const onClick = () => {
       if (parentOnClick) parentOnClick()
-      const route = userType === "Delegator" ? operatorPage(event.serviceProvider): accountPage(event.delegator)
+      const route =
+        userType === 'Delegator'
+          ? operatorPage(event.serviceProvider)
+          : accountPage(event.delegator)
       pushRoute(route)
     }
 
@@ -223,16 +231,19 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
     //  Delegator: Cancelled request to decrease delegation To SP-Y by X Audio'
     //  SP: Delegator X cancelled requested to decrease delegation by Y Audio
 
-    console.log({event})
+    console.log({ event })
     const bodyMap = {
-      "evaluated": {
-        "Delegator": (
+      evaluated: {
+        Delegator: (
           <>
             {`Decreased delegation`}
             <Tooltip
               position={Position.TOP}
               text={formatWei(event.decreaseAmount)}
-              className={clsx(styles.titleSpacingLeft, styles.titleSpacingRight)}
+              className={clsx(
+                styles.titleSpacingLeft,
+                styles.titleSpacingRight
+              )}
             >
               {formatAud(event.decreaseAmount)}
             </Tooltip>
@@ -241,16 +252,21 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
               {formatShortWallet(event.serviceProvider)}
             </span>
           </>
-          ),
-        "ServiceProvider": (
+        ),
+        ServiceProvider: (
           <>
             {`Delegator`}
-             <span className={styles.titleSpacingLeft}>
-                ${formatShortWallet(event.delegator)}
-             </span>
-            <span className={clsx(styles.titleSpacingLeft, styles.titleSpacingRight)}>
+            <span className={styles.titleSpacingLeft}>
+              ${formatShortWallet(event.delegator)}
+            </span>
+            <span
+              className={clsx(
+                styles.titleSpacingLeft,
+                styles.titleSpacingRight
+              )}
+            >
               {'decreased delegation by'}
-             </span>
+            </span>
             <Tooltip
               position={Position.TOP}
               text={formatWei(event.amount)}
@@ -259,69 +275,83 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
               {formatAud(event.amount)}
             </Tooltip>
             {TICKER}
-          </>)
+          </>
+        )
       },
-      "cancelled": {
-        "Delegator": (
+      cancelled: {
+        Delegator: (
           <>
             {`Cancelled request to decrease delegation to`}
             <span className={styles.titleSpacingLeft}>
               {formatShortWallet(event.serviceProvider)}
             </span>
-            <span className={styles.titleSpacingLeft}>
-            {'by'}
-            </span>
+            <span className={styles.titleSpacingLeft}>{'by'}</span>
             <Tooltip
               position={Position.TOP}
               text={formatWei(event.amount)}
-              className={clsx(styles.titleSpacingLeft, styles.titleSpacingRight)}
+              className={clsx(
+                styles.titleSpacingLeft,
+                styles.titleSpacingRight
+              )}
             >
               {formatAud(event.amount)}
             </Tooltip>
             {TICKER}
           </>
         ),
-        "ServiceProvider": (
+        ServiceProvider: (
           <>
-            {`Delegator ${formatShortWallet(event.delegator)} cancelled request to decrease delegation by`}
+            {`Delegator ${formatShortWallet(
+              event.delegator
+            )} cancelled request to decrease delegation by`}
             <Tooltip
               position={Position.TOP}
               text={formatWei(event.amount)}
-              className={clsx(styles.titleSpacingLeft, styles.titleSpacingRight)}
+              className={clsx(
+                styles.titleSpacingLeft,
+                styles.titleSpacingRight
+              )}
             >
               {formatAud(event.amount)}
             </Tooltip>
             {TICKER}
-          </>)
+          </>
+        )
       },
-      "requested": {
-        "Delegator": (
+      requested: {
+        Delegator: (
           <>
             {`Requested to decrease delegation to`}
             <span className={styles.titleSpacingLeft}>
               {formatShortWallet(event.serviceProvider)}
             </span>
-            <span className={styles.titleSpacingLeft}>
-            {' by'}
-            </span>
+            <span className={styles.titleSpacingLeft}>{' by'}</span>
             <Tooltip
               position={Position.TOP}
               text={formatWei(event.amount)}
-              className={clsx(styles.titleSpacingLeft, styles.titleSpacingRight)}
+              className={clsx(
+                styles.titleSpacingLeft,
+                styles.titleSpacingRight
+              )}
             >
               {formatAud(event.amount)}
             </Tooltip>
             {TICKER}
           </>
         ),
-        "ServiceProvider": (
+        ServiceProvider: (
           <>
             {`Delegator`}
             <span className={styles.titleSpacingLeft}>
-            ${formatShortWallet(event.delegator)}
+              ${formatShortWallet(event.delegator)}
             </span>
-            <span className={clsx(styles.titleSpacingLeft, styles.titleSpacingRight)}>
-            {`requested to decrease delegation by`}
+            <span
+              className={clsx(
+                styles.titleSpacingLeft,
+                styles.titleSpacingRight
+              )}
+            >
+              {`requested to decrease delegation by`}
             </span>
             <Tooltip
               position={Position.TOP}
@@ -331,15 +361,14 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
               {formatAud(event.amount)}
             </Tooltip>
             {TICKER}
-          </>)
-      },
+          </>
+        )
+      }
     }
 
     const header = headersMap[stage][userType]
     const title = (
-      <span className={styles.titleContainer}>
-        {bodyMap[stage][userType]}
-      </span>
+      <span className={styles.titleContainer}>{bodyMap[stage][userType]}</span>
     )
     return (
       <GenericTimelineEvent
@@ -389,7 +418,11 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
   // stake actions can be
   // increases, decreases requested/evaluated/(eventually cancelled)
   if ('stakeAction' in event) {
-    const action: 'increase' | 'decreaseRequested' | 'decreaseEvaluated' | 'decreaseCancelled' = event.stakeAction
+    const action:
+      | 'increase'
+      | 'decreaseRequested'
+      | 'decreaseEvaluated'
+      | 'decreaseCancelled' = event.stakeAction
 
     const onClick = () => {
       if (parentOnClick) parentOnClick()
@@ -397,22 +430,23 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
     }
 
     const headerMap = {
-      "increase": "INCREASED STAKE",
-      'decreaseRequested': "REQUESTED STAKE DECREASE",
-      "decreaseEvaluated": "DECREASED STAKE",
-      "decreaseCancelled": "CANCELLED DECREASE STAKE REQUEST"
+      increase: 'INCREASED STAKE',
+      decreaseRequested: 'REQUESTED STAKE DECREASE',
+      decreaseEvaluated: 'DECREASED STAKE',
+      decreaseCancelled: 'CANCELLED DECREASE STAKE REQUEST'
     }
     const header = headerMap[action]
 
     const sentenceFragmentMap1 = {
-      "increase": "Increased",
-      'decreaseRequested': "Requested to decrease",
-      "decreaseEvaluated": "Decreased",
-      "decreaseCancelled": "Cancelled request to decrease"
+      increase: 'Increased',
+      decreaseRequested: 'Requested to decrease',
+      decreaseEvaluated: 'Decreased',
+      decreaseCancelled: 'Cancelled request to decrease'
     }
     const sentenceFragment1 = sentenceFragmentMap1[action]
 
-    const amount = action === 'increase' ? event.increaseAmount : event.decreaseAmount
+    const amount =
+      action === 'increase' ? event.increaseAmount : event.decreaseAmount
 
     const title = (
       <span className={styles.titleContainer}>
@@ -424,7 +458,7 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
         >
           {formatAud(amount)}
         </Tooltip>
-        {action === "increase" || action === "decreaseEvaluated" ? (
+        {action === 'increase' || action === 'decreaseEvaluated' ? (
           <>
             {'to'}
             <Tooltip

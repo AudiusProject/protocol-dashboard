@@ -199,8 +199,11 @@ export default class Delegate {
   }
 
   /* Can filter either by delegator or SP */
-  async getDecreaseDelegateStakeEvents({ delegator, serviceProvider }: {
-    delegator?: Address,
+  async getDecreaseDelegateStakeEvents({
+    delegator,
+    serviceProvider
+  }: {
+    delegator?: Address
     serviceProvider?: Address
   }): Promise<Array<DecreaseDelegateStakeEvent>> {
     await this.aud.hasPermissions()
@@ -211,8 +214,8 @@ export default class Delegate {
     return info.map((event: any) => ({
       ...event,
       decreaseDelegation: true,
-      stage: "evaluated",
-      userType: delegator ? "Delegator" : "ServiceProvider"
+      stage: 'evaluated',
+      userType: delegator ? 'Delegator' : 'ServiceProvider'
     }))
   }
 
@@ -221,7 +224,7 @@ export default class Delegate {
     serviceProvider,
     delegator
   }: {
-    serviceProvider?: Address,
+    serviceProvider?: Address
     delegator?: Address
   }): Promise<Array<any>> {
     await this.aud.hasPermissions()
@@ -232,8 +235,8 @@ export default class Delegate {
     return info.map((event: any) => ({
       ...event,
       decreaseDelegation: true,
-      stage: "requested",
-      userType: delegator ? "Delegator" : "ServiceProvider"
+      stage: 'requested',
+      userType: delegator ? 'Delegator' : 'ServiceProvider'
     }))
   }
 
@@ -242,7 +245,7 @@ export default class Delegate {
     serviceProvider,
     delegator
   }: {
-    serviceProvider?: Address,
+    serviceProvider?: Address
     delegator?: Address
   }): Promise<Array<any>> {
     await this.aud.hasPermissions()
@@ -253,8 +256,8 @@ export default class Delegate {
     return info.map((event: any) => ({
       ...event,
       decreaseDelegation: true,
-      stage: "cancelled",
-      userType: delegator ? "Delegator" : "ServiceProvider"
+      stage: 'cancelled',
+      userType: delegator ? 'Delegator' : 'ServiceProvider'
     }))
   }
 

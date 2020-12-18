@@ -47,7 +47,7 @@ export const getTimeline = (state: AppState, { wallet }: { wallet: Address }) =>
 
 // -------------------------------- Thunk Actions  --------------------------------
 
-export type TimelineType = "ServiceProvider" | "Delegator"
+export type TimelineType = 'ServiceProvider' | 'Delegator'
 
 export function fetchTimeline(
   wallet: Address,
@@ -56,7 +56,10 @@ export function fetchTimeline(
   return async (dispatch, getState, aud) => {
     // Some delegation methods allow you to either filter
     // by delegator or service provider
-    const filter = timelineType === "Delegator" ? { delegator: wallet } : {serviceProvider: wallet}
+    const filter =
+      timelineType === 'Delegator'
+        ? { delegator: wallet }
+        : { serviceProvider: wallet }
 
     const events = await Promise.all([
       aud.Governance.getVotesByAddress([wallet]),

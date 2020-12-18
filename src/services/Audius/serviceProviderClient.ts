@@ -276,7 +276,6 @@ export default class ServiceProviderClient {
     }))
   }
 
-
   /* -------------------- Service Provider Write -------------------- */
 
   async registerWithDelegate(
