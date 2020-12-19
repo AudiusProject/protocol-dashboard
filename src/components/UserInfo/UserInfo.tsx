@@ -193,11 +193,7 @@ const UserInfoContainer = (props: UserInfoProps) => {
         [props.className!]: !!props.className
       })}
     >
-      {props.status !== Status.Success ? (
-        <Loading />
-      ) : (
-        <UserInfo {...props} />
-      )}
+      {props.status !== Status.Success ? <Loading /> : <UserInfo {...props} />}
     </Paper>
   )
 }
