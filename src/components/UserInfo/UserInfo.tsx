@@ -186,14 +186,21 @@ const UserInfo = ({
   )
 }
 
-const UserInfoContainer = (props: UserInfoProps) => {
+type UserInfoContainerProps = Omit<UserInfoProps, 'user'> & {
+  user: User | Operator | undefined
+}
+const UserInfoContainer = (props: UserInfoContainerProps) => {
   return (
     <Paper
       className={clsx(styles.userInfo, {
         [props.className!]: !!props.className
       })}
     >
-      {props.status !== Status.Success ? <Loading /> : <UserInfo {...props} />}
+      {props.status !== Status.Success ? (
+        <Loading />
+      ) : (
+        <UserInfo {...(props as UserInfoProps)} />
+      )}
     </Paper>
   )
 }

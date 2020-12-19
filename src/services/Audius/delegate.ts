@@ -37,6 +37,8 @@ export type GetPendingUndelegateRequestResponse = {
   target: Address
 }
 
+/* Events */
+
 export type IncreaseDelegateStakeEvent = {
   blockNumber: number
   delegator: Address
@@ -205,12 +207,14 @@ export default class Delegate {
   }: {
     delegator?: Address
     serviceProvider?: Address
-  }): Promise<Array<DecreaseDelegateStakeEvent>> {
+  }) {
     await this.aud.hasPermissions()
-    const info = await this.getContract().getDecreaseDelegateStakeEvents({
-      delegator,
-      serviceProvider
-    })
+    const info: DecreaseDelegateStakeEvent[] = await this.getContract().getDecreaseDelegateStakeEvents(
+      {
+        delegator,
+        serviceProvider
+      }
+    )
     return info.map((event: any) => ({
       ...event,
       decreaseDelegation: true,
