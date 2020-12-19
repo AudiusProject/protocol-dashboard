@@ -30,10 +30,12 @@ const TotalStakedStat: React.FC<TotalStakedStatProps> = () => {
       const activeStake = getActiveStake(user)
       return total.add(activeStake)
     }, new BN('0'))
-  
-    stat = <Tooltip className={styles.stat} text={formatWei(totalVotingPowerStake)}>
-      {formatShortAud(totalVotingPowerStake)}
-    </Tooltip>
+
+    stat = (
+      <Tooltip className={styles.stat} text={formatWei(totalVotingPowerStake)}>
+        {formatShortAud(totalVotingPowerStake)}
+      </Tooltip>
+    )
   }
 
   return <Stat label={messages.staked} stat={stat} />
