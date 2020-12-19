@@ -20,7 +20,7 @@ import {
   useUser,
   useTotalDelegates,
   useUserDelegates,
-  useTotalInboundDelegation
+  useActiveInboundDelegation
 } from 'store/cache/user/hooks'
 import { Status, User, Operator } from 'types'
 import { useAccount } from 'store/account/hooks'
@@ -101,7 +101,7 @@ const UserPage: React.FC<UserPageProps> = (props: UserPageProps) => {
   const numDiscoveryNodes = (user as Operator)?.discoveryProviders?.length ?? 0
   const numContentNodes = (user as Operator)?.contentNodes?.length ?? 0
   const activeStake = user ? getActiveStake(user) : Utils.toBN('0')
-  const inboundDelegation = useTotalInboundDelegation({ wallet })
+  const inboundDelegation = useActiveInboundDelegation({ wallet })
 
   return (
     <Page

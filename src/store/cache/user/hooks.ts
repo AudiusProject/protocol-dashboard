@@ -356,7 +356,7 @@ export const useTotalDelegates = ({ wallet }: UseTotalDelegatesProps) => {
 }
 
 /** Returns the total amount delegated inbound to an SP */
-export const useTotalInboundDelegation = ({ wallet }: { wallet: Address }) => {
+export const useActiveInboundDelegation = ({ wallet }: { wallet: Address }) => {
   const { status, user } = useUser({ wallet })
   if (status !== Status.Success || !user) {
     return { status, amount: Utils.toBN('0') }
