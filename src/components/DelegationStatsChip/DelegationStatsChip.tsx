@@ -18,6 +18,9 @@ const messages = {
   delegated: `Delegated ${TICKER}`
 }
 
+/**
+ * Shows stats about delegation. Lives on the SP page
+ */
 const DelegationStatsChip = ({
   deployerCut,
   delegated,

@@ -37,8 +37,6 @@ export type GetPendingUndelegateRequestResponse = {
   target: Address
 }
 
-/* Events */
-
 export type IncreaseDelegateStakeEvent = {
   blockNumber: number
   delegator: Address

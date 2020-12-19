@@ -30,6 +30,9 @@ type OwnProps = {
 
 type StakingStatInfoProps = OwnProps
 
+/**
+ * Shows stats about staking. Lives on the SP page
+ */
 const StakingStatInfo: React.FC<StakingStatInfoProps> = ({
   totalDelegates,
   totalDelegatesStatus,
@@ -38,7 +41,6 @@ const StakingStatInfo: React.FC<StakingStatInfoProps> = ({
   numDiscoveryNodes,
   isLoading
 }) => {
-  console.log({ totalDelegatesStatus, totalDelegates })
   const hasDelegates =
     totalDelegatesStatus === Status.Success && !totalDelegates.isZero()
   return (

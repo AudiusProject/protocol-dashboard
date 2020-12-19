@@ -4,7 +4,6 @@ import styles from './InlineStat.module.css'
 
 /**
  * Inline stat item, used on a `StatChip`.
- * @param param0
  */
 const InlineStat = ({
   className,

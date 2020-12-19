@@ -19,7 +19,7 @@ type StatsChipProps = {
   isLoading: boolean
 }
 
-/** Wrapper for showing stats, used for StakingStats on user page */
+/** Wrapper for showing stats, used on the SP page */
 const StatsChip: React.FC<StatsChipProps> = ({
   children,
   className,

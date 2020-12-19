@@ -102,7 +102,6 @@ const UserPage: React.FC<UserPageProps> = (props: UserPageProps) => {
   const numContentNodes = (user as Operator)?.contentNodes?.length ?? 0
   const activeStake = user ? getActiveStake(user) : Utils.toBN('0')
   const inboundDelegation = useTotalInboundDelegation({ wallet })
-  console.log({ inboundDelegation })
 
   return (
     <Page
