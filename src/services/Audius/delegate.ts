@@ -8,6 +8,13 @@ import {
   Permission,
   BigNumber
 } from 'types'
+import {
+  DelegateClaimEvent,
+  DelegateDecreaseStakeEvent,
+  DelegateIncreaseStakeEvent,
+  DelegateRemovedEvent,
+  DelegateSlashEvent
+} from 'models/TimelineEvents'
 
 export type DelegateStakeResponse = {
   txReceipt: TxReceipt
@@ -37,18 +44,54 @@ export type GetPendingUndelegateRequestResponse = {
   target: Address
 }
 
-export type IncreaseDelegateStakeEvent = {
+export type GetIncreaseDelegateStakeEventsResponse = {
   blockNumber: number
   delegator: Address
   increaseAmount: BN
   serviceProvider: Address
 }
 
-export type DecreaseDelegateStakeEvent = {
+export type GetDecreaseDelegateStakeEvaluatedResponse = {
   blockNumber: number
   delegator: Address
-  decreaseAmount: BN
+  amount: BN
   serviceProvider: Address
+}
+
+export type GetDecreaseDelegateStakeRequestedResponse = {
+  blockNumber: number
+  lockupExpiryBlock: number
+  delegator: Address
+  amount: BN
+  serviceProvider: Address
+}
+
+export type GetDecreaseDelegateStakeCancelledResponse = {
+  blockNumber: number
+  delegator: Address
+  amount: BN
+  serviceProvider: Address
+}
+
+export type GetClaimEventsResponse = {
+  blockNumber: number
+  claimer: Address
+  rewards: BN
+  newTotal: BN
+}
+
+export type GetSlashEventsResponse = {
+  blockNumber: number
+  target: Address
+  amount: BN
+  newTotal: BN
+}
+
+export type GetDelegatorRemovedEventsResponse = {
+  blockNumber: number
+  serviceProvider: Address
+  delegator: Address
+  unstakedAmount: BN
 }
 
 export default class Delegate {
@@ -178,46 +221,52 @@ export default class Delegate {
     return info
   }
 
-  async getIncreaseDelegateStakeEvents(
-    delegator: Address
-  ): Promise<Array<IncreaseDelegateStakeEvent>> {
-    await this.aud.hasPermissions()
-    const info = await this.getContract().getIncreaseDelegateStakeEvents({
-      delegator
-    })
-    return info.map((i: any) => ({ ...i, direction: 'SENT' }))
-  }
-
-  async getReceiveDelegationIncreaseEvents(
-    serviceProvider: Address
-  ): Promise<Array<IncreaseDelegateStakeEvent>> {
-    await this.aud.hasPermissions()
-    const info = await this.getContract().getIncreaseDelegateStakeEvents({
-      serviceProvider
-    })
-    return info.map((i: any) => ({ ...i, direction: 'RECEIVED' }))
-  }
-
-  /* Can filter either by delegator or SP */
-  async getDecreaseDelegateStakeEvents({
+  async getIncreaseDelegateStakeEvents({
     delegator,
     serviceProvider
   }: {
     delegator?: Address
     serviceProvider?: Address
-  }) {
+  }): Promise<DelegateIncreaseStakeEvent[]> {
     await this.aud.hasPermissions()
-    const info: DecreaseDelegateStakeEvent[] = await this.getContract().getDecreaseDelegateStakeEvents(
+    const info: GetIncreaseDelegateStakeEventsResponse[] = await this.getContract().getIncreaseDelegateStakeEvents(
       {
         delegator,
         serviceProvider
       }
     )
-    return info.map((event: any) => ({
+    return info.map(event => ({
       ...event,
-      decreaseDelegation: true,
-      stage: 'evaluated',
-      userType: delegator ? 'Delegator' : 'ServiceProvider'
+      _type: 'DelegateIncreaseStake',
+      direction: delegator ? 'Sent' : 'Received'
+    }))
+  }
+
+  /* Can filter either by delegator or SP */
+  async getDecreaseDelegateStakeEvaluatedEvents({
+    delegator,
+    serviceProvider
+  }: {
+    delegator?: Address
+    serviceProvider?: Address
+  }): Promise<DelegateDecreaseStakeEvent[]> {
+    await this.aud.hasPermissions()
+    const info: GetDecreaseDelegateStakeEvaluatedResponse[] = await this.getContract().getDecreaseDelegateStakeEvents(
+      {
+        delegator,
+        serviceProvider
+      }
+    )
+    return info.map(event => ({
+      _type: 'DelegateDecreaseStake',
+      direction: delegator ? 'Sent' : 'Received',
+      blockNumber: event.blockNumber,
+      delegator: event.delegator,
+      amount: event.amount,
+      serviceProvider: event.serviceProvider,
+      data: {
+        _type: 'Evaluated'
+      }
     }))
   }
 
@@ -228,17 +277,25 @@ export default class Delegate {
   }: {
     serviceProvider?: Address
     delegator?: Address
-  }): Promise<Array<any>> {
+  }): Promise<DelegateDecreaseStakeEvent[]> {
     await this.aud.hasPermissions()
-    const info = await this.getContract().getUndelegateStakeRequestedEvents({
-      serviceProvider,
-      delegator
-    })
-    return info.map((event: any) => ({
-      ...event,
-      decreaseDelegation: true,
-      stage: 'requested',
-      userType: delegator ? 'Delegator' : 'ServiceProvider'
+    const info: GetDecreaseDelegateStakeRequestedResponse[] = await this.getContract().getUndelegateStakeRequestedEvents(
+      {
+        serviceProvider,
+        delegator
+      }
+    )
+    return info.map(event => ({
+      _type: 'DelegateDecreaseStake',
+      direction: delegator ? 'Sent' : 'Received',
+      blockNumber: event.blockNumber,
+      delegator: event.delegator,
+      amount: event.amount,
+      serviceProvider: event.serviceProvider,
+      data: {
+        _type: 'Requested',
+        lockupExpiryBlock: event.lockupExpiryBlock
+      }
     }))
   }
 
@@ -249,69 +306,66 @@ export default class Delegate {
   }: {
     serviceProvider?: Address
     delegator?: Address
-  }): Promise<Array<any>> {
+  }): Promise<DelegateDecreaseStakeEvent[]> {
     await this.aud.hasPermissions()
-    const info = await this.getContract().getUndelegateStakeCancelledEvents({
-      serviceProvider,
-      delegator
-    })
-    return info.map((event: any) => ({
-      ...event,
-      decreaseDelegation: true,
-      stage: 'cancelled',
-      userType: delegator ? 'Delegator' : 'ServiceProvider'
+    const info: GetDecreaseDelegateStakeCancelledResponse[] = await this.getContract().getUndelegateStakeCancelledEvents(
+      {
+        serviceProvider,
+        delegator
+      }
+    )
+    return info.map(event => ({
+      _type: 'DelegateDecreaseStake',
+      direction: delegator ? 'Sent' : 'Received',
+      blockNumber: event.blockNumber,
+      delegator: event.delegator,
+      amount: event.amount,
+      serviceProvider: event.serviceProvider,
+      data: {
+        _type: 'Cancelled'
+      }
     }))
   }
 
-  async getClaimEvents(
-    claimer: Address
-  ): Promise<
-    Array<{
-      blockNumber: number
-      claimer: Address
-      rewards: BN
-      newTotal: BN
-    }>
-  > {
+  async getClaimEvents(claimer: Address): Promise<DelegateClaimEvent[]> {
     await this.aud.hasPermissions()
-    const info = await this.getContract().getClaimEvents({
-      claimer
-    })
-    return info
+    const info: GetClaimEventsResponse[] = await this.getContract().getClaimEvents(
+      {
+        claimer
+      }
+    )
+    return info.map(event => ({
+      ...event,
+      _type: 'DelegateClaim'
+    }))
   }
 
-  async getSlashEvents(
-    target: Address
-  ): Promise<
-    Array<{
-      blockNumber: number
-      target: Address
-      amount: BN
-      newTotal: BN
-    }>
-  > {
+  async getSlashEvents(target: Address): Promise<DelegateSlashEvent[]> {
     await this.aud.hasPermissions()
-    const info = await this.getContract().getSlashEvents({
-      target
-    })
-    return info
+    const info: GetSlashEventsResponse[] = await this.getContract().getSlashEvents(
+      {
+        target
+      }
+    )
+    return info.map(event => ({
+      ...event,
+      _type: 'DelegateSlash'
+    }))
   }
 
   async getDelegatorRemovedEvents(
     delegator: Address
-  ): Promise<
-    Array<{
-      blockNumber: number
-      serviceProvider: Address
-      delegator: Address
-      unstakedAmount: BN
-    }>
-  > {
+  ): Promise<DelegateRemovedEvent[]> {
     await this.aud.hasPermissions()
-    const info = await this.getContract().getDecreaseDelegateStakeEvents({
-      delegator
-    })
-    return info
+    const info: GetDelegatorRemovedEventsResponse[] = await this.getContract().getDecreaseDelegateStakeEvents(
+      {
+        delegator
+      }
+    )
+    return info.map(e => ({
+      ...e,
+      _type: 'DelegateRemoved'
+    }))
   }
 
   /* -------------------- Delegate Manager Client Write -------------------- */
