@@ -1,4 +1,4 @@
-import { Address } from 'types'
+import { Address, ProposalEvent, VoteEvent } from 'types'
 import BN from 'bn.js'
 import {
   GetRegisteredServiceProviderEventsResponse,
@@ -11,6 +11,7 @@ import {
   GetIncreaseDelegateStakeEventsResponse,
   GetSlashEventsResponse
 } from 'services/Audius/delegate'
+import { GetClaimProcessedResponse } from '../services/Audius/claim'
 
 type EventType =
   /* Governance */
@@ -104,6 +105,26 @@ export type DelegateSlashEvent = GetSlashEventsResponse & {
 
 export type DelegateRemovedEvent = GetDelegatorRemovedEventsResponse & {
   _type: 'DelegateRemoved'
+}
+
+/* Governance Events */
+
+export type GovernanceVoteEvent = VoteEvent & {
+  _type: 'GovernanceVote'
+}
+
+export type GovernanceVoteUpdate = VoteEvent & {
+  _type: 'GovernanceVoteUpdate'
+}
+
+export type GovernanceProposalEvent = ProposalEvent & {
+  _type: 'GovernanceProposal'
+}
+
+/* Claim Events */
+
+export type ClaimProcessedEvent = GetClaimProcessedResponse & {
+  _type: 'ClaimProcessed'
 }
 
 export type TimelineEvent = ServiceProviderRegisteredEvent

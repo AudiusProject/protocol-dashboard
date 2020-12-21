@@ -12,6 +12,13 @@ import {
   Permission,
   ProposalEvent
 } from '../../types'
+import {
+  GovernanceProposal,
+  GovernanceProposalEvent,
+  GovernanceVoteEvent,
+  GovernanceVoteUpdate
+} from 'models/TimelineEvents'
+import { add } from 'lodash'
 
 /* Types */
 
@@ -148,6 +155,17 @@ export default class Governance {
     return votes.map(formatVoteEvent).filter(Boolean) as VoteEvent[]
   }
 
+  async getVoteEventsByAddress(
+    addresses: Address[],
+    queryStartBlock?: number
+  ): Promise<GovernanceVoteEvent[]> {
+    const votes = await this.getVotesByAddress(addresses, queryStartBlock)
+    return votes.map(v => ({
+      ...v,
+      _type: 'GovernanceVote'
+    }))
+  }
+
   /** Gets all vote update events on any proposal by addresses */
   async getVoteUpdatesByAddress(
     addresses: Address[],
@@ -158,6 +176,17 @@ export default class Governance {
       { addresses, queryStartBlock }
     )
     return votes.map(formatVoteEvent).filter(Boolean) as VoteEvent[]
+  }
+
+  async getVoteUpdateEventsByAddress(
+    addresses: Address[],
+    queryStartBlock?: number
+  ): Promise<GovernanceVoteUpdate[]> {
+    const votes = await this.getVoteUpdatesByAddress(addresses, queryStartBlock)
+    return votes.map(v => ({
+      ...v,
+      _type: 'GovernanceVoteUpdate'
+    }))
   }
 
   async getProposals() {
@@ -175,13 +204,16 @@ export default class Governance {
   async getProposalsForAddresses(
     addresses: Address[],
     queryStartBlock?: number
-  ) {
+  ): Promise<GovernanceProposalEvent[]> {
     await this.aud.hasPermissions()
-    const proposals = await this.getContract().getProposalsForAddresses(
+    const proposals: ProposalEvent[] = await this.getContract().getProposalsForAddresses(
       addresses,
       queryStartBlock
     )
-    return proposals
+    return proposals.map(p => ({
+      ...p,
+      _type: 'GovernanceProposal'
+    }))
   }
 
   /* -------------------- Governance Write -------------------- */

@@ -8,6 +8,7 @@ import { useEffect } from 'react'
 import { setTimeline } from './slice'
 import { Address } from 'types'
 import { useDispatchBasedOnBlockNumber } from '../protocol/hooks'
+import { TimelineEvent } from 'models/TimelineEvents'
 
 const getFirstEvent = (...events: Array<{ blockNumber: number }>) => {
   let min = Number.MAX_SAFE_INTEGER
@@ -61,8 +62,8 @@ export function fetchTimeline(
         ? { delegator: wallet }
         : { serviceProvider: wallet }
 
-    const events = await Promise.all([
-      aud.Governance.getVotesByAddress([wallet]),
+    const events: TimelineEvent[][] = await Promise.all([
+      aud.Governance.getVoteEventsByAddress([wallet]),
       aud.Governance.getVoteUpdatesByAddress([wallet]),
       aud.Governance.getProposalsForAddresses([wallet]),
       aud.Delegate.getIncreaseDelegateStakeEvents(wallet),

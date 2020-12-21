@@ -1,6 +1,15 @@
 import { AudiusClient } from './AudiusClient'
 import BN from 'bn.js'
 import { BlockNumber, Address } from 'types'
+import { ClaimProcessedEvent } from 'models/TimelineEvents'
+
+export type GetClaimProcessedResponse = {
+  blockNumber: number
+  claimer: Address
+  rewards: BN
+  oldTotal: BN
+  newTotal: BN
+}
 
 export default class Claim {
   aud: AudiusClient
@@ -80,19 +89,16 @@ export default class Claim {
 
   async getClaimProcessedEvents(
     claimer: Address
-  ): Promise<
-    Array<{
-      blockNumber: number
-      claimer: Address
-      rewards: BN
-      oldTotal: BN
-      newTotal: BN
-    }>
-  > {
+  ): Promise<ClaimProcessedEvent[]> {
     await this.aud.hasPermissions()
-    const info = await this.getContract().getClaimProcessedEvents({
-      claimer
-    })
-    return info
+    const info: GetClaimProcessedResponse[] = await this.getContract().getClaimProcessedEvents(
+      {
+        claimer
+      }
+    )
+    return info.map(e => ({
+      ...e,
+      _type: 'ClaimProcessed'
+    }))
   }
 }
