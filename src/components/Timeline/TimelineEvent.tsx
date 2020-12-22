@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react'
 import clsx from 'clsx'
 
-import { Vote } from 'types'
 import { useProposal } from 'store/cache/proposals/hooks'
 import Proposal from 'components/Proposal'
 import { useBlock } from 'store/cache/protocol/hooks'
@@ -121,14 +120,14 @@ const GenericTimelineEvent = ({
 
 const DelegationIncreaseEvent: React.FC<{
   event: DelegateIncreaseStakeEvent
-  onClick?: () => void
+  parentOnClick?: () => void
   pushRoute: ReturnType<typeof usePushRoute>
   className?: string
-}> = ({ event, pushRoute, className }) => {
+}> = ({ event, pushRoute, className, parentOnClick }) => {
   const received = event.direction === 'Received'
 
   const onClick = () => {
-    if (onClick) onClick()
+    if (parentOnClick) parentOnClick()
     pushRoute(accountPage(received ? event.delegator : event.serviceProvider))
   }
 
@@ -162,12 +161,12 @@ const DelegationIncreaseEvent: React.FC<{
 
 const DelegationDecreaseEvent: React.FC<{
   event: DelegateDecreaseStakeEvent
-  onClick?: () => void
+  parentOnClick?: () => void
   pushRoute: ReturnType<typeof usePushRoute>
   className?: string
-}> = ({ event, pushRoute, className }) => {
+}> = ({ event, pushRoute, className, parentOnClick }) => {
   const onClick = () => {
-    if (onClick) onClick()
+    if (parentOnClick) parentOnClick()
     const route =
       event.direction === 'Sent'
         ? operatorPage(event.serviceProvider)
@@ -550,7 +549,7 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
         <DelegationIncreaseEvent
           event={event}
           pushRoute={pushRoute}
-          onClick={parentOnClick}
+          parentOnClick={parentOnClick}
         />
       )
     case 'DelegateDecreaseStake':
@@ -558,7 +557,7 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
         <DelegationDecreaseEvent
           event={event}
           pushRoute={pushRoute}
-          onClick={parentOnClick}
+          parentOnClick={parentOnClick}
         />
       )
 
