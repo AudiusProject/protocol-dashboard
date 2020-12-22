@@ -229,8 +229,6 @@ const DelegationDecreaseEvent: React.FC<{
     )
   }
 
-  // TODO: make sure this still works, old code has
-  // decrease amt and new had amount
   const renderEvaluatedSent = () => {
     return (
       <>
@@ -544,6 +542,7 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
         />
       )
 
+    // Delegation
     case 'DelegateIncreaseStake':
       return (
         <DelegationIncreaseEvent
@@ -561,6 +560,7 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
         />
       )
 
+    // SP
     case 'ServiceProviderRegistered':
     case 'ServiceProviderDeregistered':
       return (
@@ -579,6 +579,8 @@ const TimelineEvent: React.FC<TimelineEventProps> = ({
           parentOnClick={parentOnClick}
         />
       )
+
+    // Claim
     case 'DelegateClaim':
     case 'ClaimProcessed':
       return (

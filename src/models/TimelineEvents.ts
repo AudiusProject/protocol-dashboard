@@ -109,6 +109,7 @@ export type ClaimProcessedEvent = GetClaimProcessedResponse & {
 }
 
 /* Combined Events */
+
 export type TimelineEvent =
   | ServiceProviderRegisteredEvent
   | ServiceProviderDeregisteredEvent
