@@ -13,12 +13,10 @@ import {
   ProposalEvent
 } from '../../types'
 import {
-  GovernanceProposal,
   GovernanceProposalEvent,
   GovernanceVoteEvent,
-  GovernanceVoteUpdate
+  GovernanceVoteUpdateEvent
 } from 'models/TimelineEvents'
-import { add } from 'lodash'
 
 /* Types */
 
@@ -181,7 +179,7 @@ export default class Governance {
   async getVoteUpdateEventsByAddress(
     addresses: Address[],
     queryStartBlock?: number
-  ): Promise<GovernanceVoteUpdate[]> {
+  ): Promise<GovernanceVoteUpdateEvent[]> {
     const votes = await this.getVoteUpdatesByAddress(addresses, queryStartBlock)
     return votes.map(v => ({
       ...v,

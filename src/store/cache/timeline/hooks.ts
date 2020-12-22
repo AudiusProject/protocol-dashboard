@@ -62,21 +62,25 @@ export function fetchTimeline(
         ? { delegator: wallet }
         : { serviceProvider: wallet }
 
-    const events: TimelineEvent[][] = await Promise.all([
+    /* Define the events outside Promise.all because Promise.all TS bindings
+     * only supports ten elements
+     * https://github.com/microsoft/TypeScript/issues/39788
+     */
+    const rawEvents: Promise<TimelineEvent[]>[] = [
       aud.Governance.getVoteEventsByAddress([wallet]),
-      aud.Governance.getVoteUpdatesByAddress([wallet]),
+      aud.Governance.getVoteUpdateEventsByAddress([wallet]),
       aud.Governance.getProposalsForAddresses([wallet]),
-      aud.Delegate.getIncreaseDelegateStakeEvents(wallet),
       aud.Claim.getClaimProcessedEvents(wallet),
-      aud.Delegate.getReceiveDelegationIncreaseEvents(wallet),
       aud.ServiceProviderClient.getRegisteredServiceProviderEvents(wallet),
       aud.ServiceProviderClient.getDeregisteredServiceProviderEvents(wallet),
       aud.ServiceProviderClient.getIncreasedStakeEvents(wallet),
       aud.ServiceProviderClient.getDecreasedStakeRequestedEvents(wallet),
-      aud.Delegate.getDecreaseDelegateStakeEvents(filter),
+      aud.Delegate.getIncreaseDelegateStakeEvents(filter),
+      aud.Delegate.getDecreaseDelegateStakeEvaluatedEvents(filter),
       aud.Delegate.getUndelegateStakeRequestedEvents(filter),
       aud.Delegate.getUndelegateStakeCancelledEvents(filter)
-    ])
+    ]
+    const events: TimelineEvent[][] = await Promise.all(rawEvents)
 
     const timeline = combineEvents(...events).reverse()
     dispatch(setTimeline({ wallet, timeline }))

@@ -13,25 +13,6 @@ import {
 } from 'services/Audius/delegate'
 import { GetClaimProcessedResponse } from '../services/Audius/claim'
 
-type EventType =
-  /* Governance */
-  | 'GovernanceVote'
-  | 'GovernanceProposal'
-
-  /* Delegation */
-  | 'DelegateIncreaseStake'
-  | 'DelegateDecreaseStake'
-
-  /* Claims */
-  | 'ClaimProcessed'
-
-  /* ServiceProvider */
-  | 'ServiceProviderRegistered'
-  | 'ServiceProviderDeregistered'
-  | 'ServiceProviderIncreaseStake'
-  | 'ServiceProviderDecreaseStake'
-  | 'ServiceProviderClaim'
-
 /* ServiceProvider Events */
 
 export type ServiceProviderRegisteredEvent = GetRegisteredServiceProviderEventsResponse & {
@@ -113,7 +94,7 @@ export type GovernanceVoteEvent = VoteEvent & {
   _type: 'GovernanceVote'
 }
 
-export type GovernanceVoteUpdate = VoteEvent & {
+export type GovernanceVoteUpdateEvent = VoteEvent & {
   _type: 'GovernanceVoteUpdate'
 }
 
@@ -127,4 +108,18 @@ export type ClaimProcessedEvent = GetClaimProcessedResponse & {
   _type: 'ClaimProcessed'
 }
 
-export type TimelineEvent = ServiceProviderRegisteredEvent
+/* Combined Events */
+export type TimelineEvent =
+  | ServiceProviderRegisteredEvent
+  | ServiceProviderDeregisteredEvent
+  | ServiceProviderIncreaseStakeEvent
+  | ServiceProviderDecreaseStakeEvent
+  | DelegateIncreaseStakeEvent
+  | DelegateDecreaseStakeEvent
+  | DelegateClaimEvent
+  | DelegateSlashEvent
+  | DelegateRemovedEvent
+  | GovernanceVoteEvent
+  | GovernanceVoteUpdateEvent
+  | GovernanceProposalEvent
+  | ClaimProcessedEvent
