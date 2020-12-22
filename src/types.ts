@@ -66,8 +66,6 @@ export type Delegate = {
 
 type EventID = string
 
-export type Event = any
-
 export type User = {
   wallet: Address
   name?: string

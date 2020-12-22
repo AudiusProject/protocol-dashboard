@@ -10,7 +10,7 @@ import { Address } from 'types'
 import { useDispatchBasedOnBlockNumber } from '../protocol/hooks'
 import { TimelineEvent } from 'models/TimelineEvents'
 
-const getFirstEvent = (...events: Array<{ blockNumber: number }>) => {
+const getFirstEvent = (...events: TimelineEvent[]) => {
   let min = Number.MAX_SAFE_INTEGER
   let firstEvent = null
   let index = 0
@@ -22,13 +22,13 @@ const getFirstEvent = (...events: Array<{ blockNumber: number }>) => {
       index = i
     }
   }
-  return { firstEvent, index }
+  // TS thinks firstEvent can be null because it doesn't
+  // understand the algorithm, so cast
+  return { firstEvent: firstEvent as TimelineEvent, index }
 }
 
-const combineEvents = (
-  ...eventLists: Array<Array<{ blockNumber: number }>>
-) => {
-  const combined = []
+const combineEvents = (...eventLists: TimelineEvent[][]) => {
+  const combined: TimelineEvent[] = []
   let i = 0
   const combinedLength = eventLists.reduce((acc, cur) => acc + cur.length, 0)
   while (i < combinedLength) {
@@ -54,7 +54,7 @@ export function fetchTimeline(
   wallet: Address,
   timelineType: TimelineType
 ): ThunkAction<void, AppState, Audius, Action<string>> {
-  return async (dispatch, getState, aud) => {
+  return async (dispatch, _, aud) => {
     // Some delegation methods allow you to either filter
     // by delegator or service provider
     const filter =
