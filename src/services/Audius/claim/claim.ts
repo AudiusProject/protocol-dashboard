@@ -1,15 +1,8 @@
-import { AudiusClient } from './AudiusClient'
+import { AudiusClient } from '../AudiusClient'
 import BN from 'bn.js'
 import { BlockNumber, Address } from 'types'
 import { ClaimProcessedEvent } from 'models/TimelineEvents'
-
-export type GetClaimProcessedResponse = {
-  blockNumber: number
-  claimer: Address
-  rewards: BN
-  oldTotal: BN
-  newTotal: BN
-}
+import { GetClaimProcessedResponse } from './types'
 
 export default class Claim {
   aud: AudiusClient
