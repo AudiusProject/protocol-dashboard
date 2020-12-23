@@ -5,12 +5,12 @@ import {
   GetDeregisteredServiceProviderEventsResponse,
   GetIncreasedStakeEventResponse
 } from '../services/Audius/serviceProviderClient'
+import { GetIncreaseDelegateStakeEventsResponse } from 'services/Audius/delegate/types'
 import {
   GetClaimEventsResponse,
   GetDelegatorRemovedEventsResponse,
-  GetIncreaseDelegateStakeEventsResponse,
   GetSlashEventsResponse
-} from 'services/Audius/delegate'
+} from 'services/Audius/delegate/types'
 import { GetClaimProcessedResponse } from '../services/Audius/claim'
 
 /* ServiceProvider Events */

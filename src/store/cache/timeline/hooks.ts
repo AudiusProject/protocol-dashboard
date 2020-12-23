@@ -80,7 +80,7 @@ export function fetchTimeline(
       aud.Delegate.getUndelegateStakeRequestedEvents(filter),
       aud.Delegate.getUndelegateStakeCancelledEvents(filter)
     ]
-    const events: TimelineEvent[][] = await Promise.all(rawEvents)
+    const events = await Promise.all(rawEvents)
 
     const timeline = combineEvents(...events).reverse()
     dispatch(setTimeline({ wallet, timeline }))

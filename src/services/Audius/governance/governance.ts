@@ -1,4 +1,4 @@
-import { AudiusClient } from './AudiusClient'
+import { AudiusClient } from '../AudiusClient'
 
 import BN from 'bn.js'
 
@@ -11,28 +11,15 @@ import {
   VoteEvent,
   Permission,
   ProposalEvent
-} from '../../types'
+} from '../../../types'
 import {
   GovernanceProposalEvent,
   GovernanceVoteEvent,
   GovernanceVoteUpdateEvent
 } from 'models/TimelineEvents'
+import { RawProposal, RawVoteEvent } from './types'
 
 /* Types */
-
-/**
- * Raw unformatted Proposal returned over the wire.
- */
-export type RawProposal = Omit<Proposal, 'outcome'> & {
-  outcome: number
-}
-
-/**
- * Raw unformatted VoteEvent returned over the wire.
- */
-export type RawVoteEvent = Omit<VoteEvent, 'vote'> & {
-  vote: 1 | 2
-}
 
 export default class Governance {
   public aud: AudiusClient

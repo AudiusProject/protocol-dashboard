@@ -1,8 +1,8 @@
 import ServiceProviderClient from './serviceProviderClient'
 import Staking from './staking'
 import AudiusToken from './audiusToken'
-import Delegate from './delegate'
-import Governance from './governance'
+import Delegate from './delegate/delegate'
+import Governance from './governance/governance'
 import NodeType from './nodeType'
 import Claim from './claim'
 

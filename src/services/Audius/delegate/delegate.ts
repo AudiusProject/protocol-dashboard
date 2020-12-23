@@ -1,13 +1,6 @@
-import { AudiusClient } from './AudiusClient'
+import { AudiusClient } from '../AudiusClient'
 import BN from 'bn.js'
-import {
-  Address,
-  Amount,
-  BlockNumber,
-  TxReceipt,
-  Permission,
-  BigNumber
-} from 'types'
+import { Address, Amount, BlockNumber, TxReceipt, Permission } from 'types'
 import {
   DelegateClaimEvent,
   DelegateDecreaseStakeEvent,
@@ -15,83 +8,26 @@ import {
   DelegateRemovedEvent,
   DelegateSlashEvent
 } from 'models/TimelineEvents'
+import {
+  GetClaimEventsResponse,
+  GetDelegatorRemovedEventsResponse,
+  GetDelegatorsListResponse,
+  GetSlashEventsResponse,
+  GetDecreaseDelegateStakeCancelledResponse,
+  GetDecreaseDelegateStakeEvaluatedResponse,
+  GetDecreaseDelegateStakeRequestedResponse,
+  GetIncreaseDelegateStakeEventsResponse,
+  GetPendingUndelegateRequestResponse,
+  UndelegateStakeResponse,
+  RemoveDelegatorResponse
+} from './types'
 
 export type DelegateStakeResponse = {
   txReceipt: TxReceipt
   tokenApproveReceipt: { txReceipt: TxReceipt }
   delegator: Address
   serviceProvider: Address
-  increaseAmount: BigNumber
-}
-
-export type UndelegateStakeResponse = {
-  delegator: Address
-  serviceProvider: Address
-  decreaseAmount: BigNumber
-}
-
-export type RemoveDelegatorResponse = {
-  delegator: Address
-  serviceProvider: Address
-  unstakedAmount: BigNumber
-}
-
-export type GetDelegatorsListResponse = Array<Address>
-
-export type GetPendingUndelegateRequestResponse = {
-  amount: BigNumber
-  lockupExpiryBlock: BlockNumber
-  target: Address
-}
-
-export type GetIncreaseDelegateStakeEventsResponse = {
-  blockNumber: number
-  delegator: Address
   increaseAmount: BN
-  serviceProvider: Address
-}
-
-export type GetDecreaseDelegateStakeEvaluatedResponse = {
-  blockNumber: number
-  delegator: Address
-  amount: BN
-  serviceProvider: Address
-}
-
-export type GetDecreaseDelegateStakeRequestedResponse = {
-  blockNumber: number
-  lockupExpiryBlock: number
-  delegator: Address
-  amount: BN
-  serviceProvider: Address
-}
-
-export type GetDecreaseDelegateStakeCancelledResponse = {
-  blockNumber: number
-  delegator: Address
-  amount: BN
-  serviceProvider: Address
-}
-
-export type GetClaimEventsResponse = {
-  blockNumber: number
-  claimer: Address
-  rewards: BN
-  newTotal: BN
-}
-
-export type GetSlashEventsResponse = {
-  blockNumber: number
-  target: Address
-  amount: BN
-  newTotal: BN
-}
-
-export type GetDelegatorRemovedEventsResponse = {
-  blockNumber: number
-  serviceProvider: Address
-  delegator: Address
-  unstakedAmount: BN
 }
 
 export default class Delegate {
@@ -117,7 +53,7 @@ export default class Delegate {
 
   async getTotalDelegatedToServiceProvider(
     serviceProvider: Address
-  ): Promise<BigNumber> {
+  ): Promise<BN> {
     await this.aud.hasPermissions()
     const info = await this.getContract().getTotalDelegatedToServiceProvider(
       serviceProvider
@@ -125,7 +61,7 @@ export default class Delegate {
     return info
   }
 
-  async getTotalDelegatorStake(delegator: Address): Promise<BigNumber> {
+  async getTotalDelegatorStake(delegator: Address): Promise<BN> {
     await this.aud.hasPermissions()
     const info = await this.getContract().getTotalDelegatorStake(delegator)
     return info
@@ -133,7 +69,7 @@ export default class Delegate {
 
   async getTotalLockedDelegationForServiceProvider(
     serviceProvider: Address
-  ): Promise<BigNumber> {
+  ): Promise<BN> {
     await this.aud.hasPermissions()
     const info = await this.getContract().getTotalLockedDelegationForServiceProvider(
       serviceProvider
@@ -144,7 +80,7 @@ export default class Delegate {
   async getDelegatorStakeForServiceProvider(
     delegator: Address,
     serviceProvider: Address
-  ): Promise<BigNumber> {
+  ): Promise<BN> {
     await this.aud.hasPermissions()
     const info = await this.getContract().getDelegatorStakeForServiceProvider(
       delegator,
@@ -185,7 +121,7 @@ export default class Delegate {
     return info
   }
 
-  async getMinDelegationAmount(): Promise<BigNumber> {
+  async getMinDelegationAmount(): Promise<BN> {
     await this.aud.hasPermissions()
     const info = await this.getContract().getMinDelegationAmount()
     return info
