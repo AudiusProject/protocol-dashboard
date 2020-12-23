@@ -13,7 +13,7 @@ import {
   GetDelegatorRemovedEventsResponse,
   GetDelegatorsListResponse,
   GetSlashEventsResponse,
-  GetDecreaseDelegateStakeCancelledResponse,
+  GetDecreaseDelegateStakeCancelledEventsResponse,
   GetDecreaseDelegateStakeEvaluatedResponse,
   GetDecreaseDelegateStakeRequestedResponse,
   GetIncreaseDelegateStakeEventsResponse,
@@ -244,7 +244,7 @@ export default class Delegate {
     delegator?: Address
   }): Promise<DelegateDecreaseStakeEvent[]> {
     await this.aud.hasPermissions()
-    const info: GetDecreaseDelegateStakeCancelledResponse[] = await this.getContract().getUndelegateStakeCancelledEvents(
+    const info: GetDecreaseDelegateStakeCancelledEventsResponse[] = await this.getContract().getUndelegateStakeCancelledEvents(
       {
         serviceProvider,
         delegator

@@ -43,7 +43,7 @@ export type GetDecreaseDelegateStakeRequestedResponse = {
   serviceProvider: Address
 }
 
-export type GetDecreaseDelegateStakeCancelledResponse = {
+export type GetDecreaseDelegateStakeCancelledEventsResponse = {
   blockNumber: number
   delegator: Address
   amount: BN
