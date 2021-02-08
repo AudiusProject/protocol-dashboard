@@ -58,10 +58,7 @@ const Proposal: React.FC<ProposalProps> = (props: ProposalProps) => {
         </div>
         {proposal ? (
           <div className={styles.descriptionBody}>
-            <ReactMarkdown
-              plugins={[gfm]}
-              linkTarget='_blank'
-            >
+            <ReactMarkdown plugins={[gfm]} linkTarget="_blank">
               {proposal.description || ''}
             </ReactMarkdown>
           </div>
