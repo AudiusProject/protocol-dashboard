@@ -23,7 +23,7 @@ export const get3BoxProfile = async (
     const user: User = { image }
 
     // Get the profile from 3box
-    const profile = await withTimeout(getProfile(wallet), 3000) as User
+    const profile = (await withTimeout(getProfile(wallet), 3000)) as User
     if (profile.status === 'error') return user
 
     // Extract the name and image url
