@@ -102,11 +102,11 @@ jobs:
           command: |
             DNS_NAME=_dnslink.dashboard.staging.audius.org
             CID=$(cat ./build_cid.txt)
-            curl -X PUT "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records/${CLOUDFLARE_ACCOUNT_ID}" \
+            curl -X PUT "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records/${CLOUDFLARE_STAGE_DASHBOARD_DNS_ID}" \
               -H "X-Auth-Email: ${CLOUDFLARE_AUTH_EMAIL}" \
-              -H "X-Auth-Key: ${CLOUDFLARE_AUTH_KEY}" \
+              -H "Authorization: Bearer ${CLOUDFLARE_AUTH_KEY}" \
               -H "Content-Type: application/json" \
-              --data '{"type":"TXT","name":"$DNS_NAME","content":"\"dnslink=/ipfs/$CID\"","ttl":1,"proxied":false}'
+              --data '{"type":"TXT","name":"'"$DNS_NAME"'","content":"\"dnslink=/ipfs/'"$CID"'\"","ttl":1,"proxied":false}'
 
   build-prod:
     working_directory: ~/protocol-dashboard
@@ -171,11 +171,11 @@ jobs:
           command: |
             DNS_NAME=_dnslink.dashboard.audius.org
             CID=$(cat ./build_cid.txt)
-            curl -X PUT "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records/${CLOUDFLARE_ACCOUNT_ID}" \
+            curl -X PUT "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records/${CLOUDFLARE_PROD_DASHBOARD_DNS_ID}" \
               -H "X-Auth-Email: ${CLOUDFLARE_AUTH_EMAIL}" \
-              -H "X-Auth-Key: ${CLOUDFLARE_AUTH_KEY}" \
+              -H "Authorization: Bearer ${CLOUDFLARE_AUTH_KEY}" \
               -H "Content-Type: application/json" \
-              --data '{"type":"TXT","name":"$DNS_NAME","content":"\"dnslink=/ipfs/$CID\"","ttl":1,"proxied":false}'
+              --data '{"type":"TXT","name":"'"$DNS_NAME"'","content":"\"dnslink=/ipfs/'"$CID"'\"","ttl":1,"proxied":false}'
 
 workflows:
   version: 2
@@ -193,6 +193,7 @@ workflows:
           #   branches:
           #     only: /^main$/
       - update-staging-ga-build:
+          context: Pinata
           requires:
             - deploy-staging
           # filters:
@@ -232,6 +233,7 @@ workflows:
             branches:
               only: /^main$/
       - update-prod-ga-build:
+          context: Pinata
           requires:
             - deploy-prod
           filters:
