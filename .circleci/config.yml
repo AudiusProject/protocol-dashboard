@@ -189,32 +189,32 @@ workflows:
           context: Audius Client
           requires:
             - build-staging
-          # filters:
-          #   branches:
-          #     only: /^main$/
+          filters:
+            branches:
+              only: /^main$/
       - update-staging-ga-build:
           context: Pinata
           requires:
             - deploy-staging
-          # filters:
-          #   branches:
-          #     only: /^main$/
+          filters:
+            branches:
+              only: /^main$/
       - hold-update-staging-records:
           type: approval
           requires:
             - update-staging-ga-build
-          # filters:
-          #   branches:
-          #     only: /^main$/
+          filters:
+            branches:
+              only: /^main$/
       - update-staging-records:
           context:
             - Audius Client
             - Cloudflare API
           requires:
             - hold-update-staging-records
-          # filters:
-          #   branches:
-          #     only: /^main$/
+          filters:
+            branches:
+              only: /^main$/
       - build-prod:
           requires:
             - init

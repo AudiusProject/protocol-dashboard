@@ -96,7 +96,6 @@ const pinGABuild = async () => {
 }
 
 const pinPinata = async (cid, addr) => {
-  console.log(`CID ${cid} pinned to pinata`)
   const options = {
     pinataMetadata: {
       name: `Dashboard build ${env} ${cid} - ${new Date().toISOString()}`
@@ -110,6 +109,7 @@ const pinPinata = async (cid, addr) => {
   return new Promise((resolve, reject) => {
     pinata.pinByHash(cid, options)
       .then((result) => {
+        console.log(`CID ${cid} pinned to pinata`)
         resolve(result)
       }).catch((err) => {
         reject(err)
