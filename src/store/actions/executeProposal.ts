@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { ThunkAction } from 'redux-thunk'
 import { Action } from 'redux'
 
-import { Status, Vote } from 'types'
+import { Status } from 'types'
 import Audius from 'services/Audius'
 import { AppState } from 'store/types'
 import { fetchProposal } from 'store/cache/proposals/hooks'

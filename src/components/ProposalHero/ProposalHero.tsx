@@ -59,7 +59,7 @@ type VoteCTAProps = {
   onExecuteProposal: () => void
   currentVote: Vote
   submissionBlock: number
-  inProgressProposalSubstate: InProgressOutcomeSubstates
+  inProgressProposalSubstate: null | InProgressOutcomeSubstates
 }
 
 const VoteCTA: React.FC<VoteCTAProps> = ({
@@ -205,12 +205,15 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
   const amountAbstained = useAmountAbstained(proposal) || Utils.toBN('0')
 
   const inProgressProposalSubstate = useGetInProgressProposalSubstate(proposal)
+
   const isActive =
-    inProgressProposalSubstate === InProgressOutcomeSubstates.InProgress ||
-    inProgressProposalSubstate ===
-      InProgressOutcomeSubstates.InProgressAwaitingExecution ||
-    inProgressProposalSubstate ===
-      InProgressOutcomeSubstates.InProgressExecutionDelay
+    proposal?.outcome === Outcome.InProgress &&
+    (inProgressProposalSubstate === InProgressOutcomeSubstates.InProgress ||
+      inProgressProposalSubstate ===
+        InProgressOutcomeSubstates.InProgressAwaitingExecution ||
+      inProgressProposalSubstate ===
+        InProgressOutcomeSubstates.InProgressExecutionDelay)
+
   const evaluatedBlockTimestamp = proposal?.evaluatedBlock?.timestamp ?? null
 
   const submitVoteBox = (

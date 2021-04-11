@@ -254,8 +254,7 @@ export const useGetInProgressProposalSubstate = (proposal: Proposal) => {
   const { executionDelay } = useExecutionDelay()
   const currentBlockNumber = useEthBlockNumber()
 
-  if (!proposal || !proposal.submissionBlockNumber)
-    return InProgressOutcomeSubstates.InProgress
+  if (!proposal || !proposal.submissionBlockNumber) return null
 
   const { submissionBlockNumber } = proposal
   if (
@@ -264,7 +263,7 @@ export const useGetInProgressProposalSubstate = (proposal: Proposal) => {
     !executionDelay ||
     !currentBlockNumber
   )
-    return InProgressOutcomeSubstates.InProgress
+    return null
 
   if (
     currentBlockNumber >=
