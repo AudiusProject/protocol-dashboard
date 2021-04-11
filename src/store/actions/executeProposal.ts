@@ -14,7 +14,6 @@ function executeAudiusProposal(
   setError: (msg: string) => void
 ): ThunkAction<void, AppState, Audius, Action<string>> {
   return async (dispatch, getState, aud) => {
-    console.log('inside executeAudiusProposal')
     setStatus(Status.Loading)
     try {
       await aud.Governance.evaluateProposalOutcome({ proposalId })

@@ -204,12 +204,7 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
 
   const amountAbstained = useAmountAbstained(proposal) || Utils.toBN('0')
 
-  // const inVotingPeriod = useInVotingPeriod(proposal)
-  // console.log('inVotingPeriod', inVotingPeriod)
-  // const canExecuteProposal = useCanExecuteProposal(proposal)
-  // console.log('canExecuteProposal', canExecuteProposal)
   const inProgressProposalSubstate = useGetInProgressProposalSubstate(proposal)
-  console.log('inProgressProposalSubstate', inProgressProposalSubstate)
   const isActive =
     inProgressProposalSubstate === InProgressOutcomeSubstates.InProgress ||
     inProgressProposalSubstate ===

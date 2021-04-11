@@ -242,27 +242,6 @@ export const useAmountAbstained = (proposal: Proposal) => {
   return totalStaked.sub(voteMagnitude)
 }
 
-export const useCanExecuteProposal = (proposal: Proposal) => {
-  const { votingPeriod } = useVotingPeriod()
-  const { executionDelay } = useExecutionDelay()
-  const currentBlockNumber = useEthBlockNumber()
-
-  if (!proposal || !proposal.submissionBlockNumber) return false
-
-  const { submissionBlockNumber } = proposal
-  if (
-    !submissionBlockNumber ||
-    !votingPeriod ||
-    !executionDelay ||
-    !currentBlockNumber
-  )
-    return false
-  const canExecuteProposal =
-    currentBlockNumber >= submissionBlockNumber + votingPeriod + executionDelay
-
-  return canExecuteProposal
-}
-
 /**
  * Although a proposal can be InProgress, there's several substates like:
  * InProgress - can be voted on
