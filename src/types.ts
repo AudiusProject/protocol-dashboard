@@ -133,6 +133,12 @@ export enum Outcome {
   TargetContractCodeHashChanged = 'TargetContractCodeHashChanged' // Proposal considered invalid since code has at target contract address has changed
 }
 
+export enum InProgressOutcomeSubstates {
+  InProgress = 'InProgress', // Proposal is active and can be voted on.
+  InProgressExecutionDelay = 'InProgressExecutionDelay', //Proposal is active but cannot be voted on because it's in execution delay
+  InProgressAwaitingExecution = 'InProgressAwaitingExecution' //Proposal has passed execution delay and can be executed
+}
+
 export type ProposalId = number
 
 export type Proposal = {

@@ -4,19 +4,28 @@ import { Utils } from '@audius/libs'
 import Paper from 'components/Paper'
 import VoteMeter from 'components/VoteMeter'
 import ProposalStatusBadge from 'components/ProposalStatusBadge'
-import { Proposal, Outcome, Vote, Address, Status } from 'types'
+import {
+  Proposal,
+  Outcome,
+  Vote,
+  Address,
+  Status,
+  InProgressOutcomeSubstates
+} from 'types'
 import Button, { ButtonType } from 'components/Button'
 import { leftPadZero, getDate, getHumanReadableTime } from 'utils/format'
 import { ReactComponent as IconThumbUp } from 'assets/img/iconThumbUp.svg'
 import { ReactComponent as IconThumbDown } from 'assets/img/iconThumbDown.svg'
 import ConfirmTransactionModal from 'components/ConfirmTransactionModal'
 import { useSubmitVote } from 'store/actions/submitVote'
+import { useExecuteProposal } from 'store/actions/executeProposal'
 import { StandaloneBox } from 'components/ConfirmTransactionModal/ConfirmTransactionModal'
 import Loading from 'components/Loading'
 import DisplayAudio from 'components/DisplayAudio'
 import {
   useProposalTimeRemaining,
-  useAmountAbstained
+  useAmountAbstained,
+  useGetInProgressProposalSubstate
 } from 'store/cache/proposals/hooks'
 import { useAccountUser } from 'store/account/hooks'
 import { Position } from 'components/Tooltip'
@@ -40,21 +49,26 @@ const messages = {
   voted: 'VOTED',
   quorum: 'QUORUM',
   quorumMet: 'Quorum Met',
-  quorumNotMet: 'Quorum Not Met'
+  quorumNotMet: 'Quorum Not Met',
+  evaluate: 'EVALUATE PROPOSAL'
 }
 
 type VoteCTAProps = {
   onVoteFor: () => void
   onVoteAgainst: () => void
+  onExecuteProposal: () => void
   currentVote: Vote
   submissionBlock: number
+  inProgressProposalSubstate: InProgressOutcomeSubstates
 }
 
 const VoteCTA: React.FC<VoteCTAProps> = ({
   onVoteFor,
   onVoteAgainst,
+  onExecuteProposal,
   currentVote,
-  submissionBlock
+  submissionBlock,
+  inProgressProposalSubstate
 }) => {
   const { timeRemaining, targetBlock } = useProposalTimeRemaining(
     submissionBlock
@@ -81,28 +95,41 @@ const VoteCTA: React.FC<VoteCTAProps> = ({
           <span>{`${messages.targetBlock}: ${targetBlock}`}</span>
         </div>
       </div>
-      {isUserStaker && (
-        <div className={styles.vote}>
-          <Button
-            leftIcon={<IconThumbUp />}
-            className={styles.voteFor}
-            text={messages.voteFor}
-            type={ButtonType.GREEN}
-            onClick={onVoteFor}
-            isDepressed={currentVote === Vote.Yes}
-            isDisabled={currentVote === Vote.Yes}
-          />
-          <Button
-            leftIcon={<IconThumbDown />}
-            className={styles.voteAgainst}
-            text={messages.voteAgainst}
-            type={ButtonType.RED}
-            onClick={onVoteAgainst}
-            isDepressed={currentVote === Vote.No}
-            isDisabled={currentVote === Vote.No}
-          />
-        </div>
-      )}
+      {isUserStaker &&
+        inProgressProposalSubstate ===
+          InProgressOutcomeSubstates.InProgressAwaitingExecution && (
+          <div>
+            <Button
+              text="Evalute Proposal"
+              type={ButtonType.GREEN}
+              onClick={onExecuteProposal}
+            />
+          </div>
+        )}
+      {isUserStaker &&
+        inProgressProposalSubstate ===
+          InProgressOutcomeSubstates.InProgress && (
+          <div className={styles.vote}>
+            <Button
+              leftIcon={<IconThumbUp />}
+              className={styles.voteFor}
+              text={messages.voteFor}
+              type={ButtonType.GREEN}
+              onClick={onVoteFor}
+              isDepressed={currentVote === Vote.Yes}
+              isDisabled={currentVote === Vote.Yes}
+            />
+            <Button
+              leftIcon={<IconThumbDown />}
+              className={styles.voteAgainst}
+              text={messages.voteAgainst}
+              type={ButtonType.RED}
+              onClick={onVoteAgainst}
+              isDepressed={currentVote === Vote.No}
+              isDisabled={currentVote === Vote.No}
+            />
+          </div>
+        )}
     </div>
   )
 }
@@ -136,6 +163,8 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
 
   const { status, error, submitVote } = useSubmitVote(reset)
 
+  const { executeProposal } = useExecuteProposal(reset)
+
   const [currentVote, setCurrentVote] = useState<Vote>(userVote)
   const [newVote, setNewVote] = useState<Vote>(userVote)
   useEffect(() => {
@@ -155,6 +184,10 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
     setIsConfirmModalOpen(true)
   }, [setNewVote, setIsConfirmModalOpen])
 
+  const onExecuteProposal = useCallback(() => {
+    executeProposal(proposal.proposalId)
+  }, [executeProposal, proposal])
+
   const onConfirm = useCallback(() => {
     if (!!newVote) {
       submitVote(proposal.proposalId, newVote, currentVote)
@@ -171,7 +204,18 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
 
   const amountAbstained = useAmountAbstained(proposal) || Utils.toBN('0')
 
-  const isActive = proposal?.outcome === Outcome.InProgress
+  // const inVotingPeriod = useInVotingPeriod(proposal)
+  // console.log('inVotingPeriod', inVotingPeriod)
+  // const canExecuteProposal = useCanExecuteProposal(proposal)
+  // console.log('canExecuteProposal', canExecuteProposal)
+  const inProgressProposalSubstate = useGetInProgressProposalSubstate(proposal)
+  console.log('inProgressProposalSubstate', inProgressProposalSubstate)
+  const isActive =
+    inProgressProposalSubstate === InProgressOutcomeSubstates.InProgress ||
+    inProgressProposalSubstate ===
+      InProgressOutcomeSubstates.InProgressAwaitingExecution ||
+    inProgressProposalSubstate ===
+      InProgressOutcomeSubstates.InProgressExecutionDelay
   const evaluatedBlockTimestamp = proposal?.evaluatedBlock?.timestamp ?? null
 
   const submitVoteBox = (
@@ -200,6 +244,8 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
               onVoteFor={onVoteFor}
               onVoteAgainst={onVoteAgainst}
               submissionBlock={proposal.submissionBlockNumber}
+              inProgressProposalSubstate={inProgressProposalSubstate}
+              onExecuteProposal={onExecuteProposal}
             />
           )}
           <div className={styles.bottom}>

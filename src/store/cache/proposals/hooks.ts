@@ -7,15 +7,22 @@ import { AppState } from 'store/types'
 import {
   setActiveProposals,
   setAllProposals,
+  setExecutionDelay,
   setProposal,
   setVotingPeriod
 } from './slice'
 import { useEffect } from 'react'
-import { Proposal, ProposalEvent, Outcome } from 'types'
+import {
+  Proposal,
+  ProposalEvent,
+  Outcome,
+  InProgressOutcomeSubstates
+} from 'types'
 import {
   useTotalStaked,
   useDispatchBasedOnBlockNumber,
-  useTimeRemaining
+  useTimeRemaining,
+  useEthBlockNumber
 } from 'store/cache/protocol/hooks'
 
 // -------------------------------- Selectors  --------------------------------
@@ -45,6 +52,9 @@ export const getProposal = (
 
 export const getVotingPeriod = (state: AppState) =>
   state.cache.proposals.votingPeriod
+
+export const getExecutionDelay = (state: AppState) =>
+  state.cache.proposals.executionDelay
 
 // -------------------------------- Thunk Actions  --------------------------------
 
@@ -143,6 +153,18 @@ export function fetchVotingPeriod(): ThunkAction<
   }
 }
 
+export function fetchExecutionDelay(): ThunkAction<
+  void,
+  AppState,
+  Audius,
+  Action<string>
+> {
+  return async (dispatch, getState, aud) => {
+    const executionDelay = await aud.Governance.getExecutionDelay()
+    dispatch(setExecutionDelay({ executionDelay }))
+  }
+}
+
 // -------------------------------- Hooks  --------------------------------
 
 export const useProposals = () => {
@@ -195,6 +217,18 @@ export const useVotingPeriod = () => {
   return { votingPeriod }
 }
 
+export const useExecutionDelay = () => {
+  const executionDelay = useSelector(getExecutionDelay)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (!executionDelay) {
+      dispatch(fetchExecutionDelay())
+    }
+  }, [dispatch, executionDelay])
+
+  return { executionDelay }
+}
+
 export const useProposalTimeRemaining = (submissionBlock: number) => {
   const { votingPeriod } = useVotingPeriod()
   const remaining = useTimeRemaining(submissionBlock, votingPeriod)
@@ -206,4 +240,59 @@ export const useAmountAbstained = (proposal: Proposal) => {
   if (!proposal || !totalStaked) return null
   const voteMagnitude = proposal.voteMagnitudeYes.add(proposal.voteMagnitudeNo)
   return totalStaked.sub(voteMagnitude)
+}
+
+export const useCanExecuteProposal = (proposal: Proposal) => {
+  const { votingPeriod } = useVotingPeriod()
+  const { executionDelay } = useExecutionDelay()
+  const currentBlockNumber = useEthBlockNumber()
+
+  if (!proposal || !proposal.submissionBlockNumber) return false
+
+  const { submissionBlockNumber } = proposal
+  if (
+    !submissionBlockNumber ||
+    !votingPeriod ||
+    !executionDelay ||
+    !currentBlockNumber
+  )
+    return false
+  const canExecuteProposal =
+    currentBlockNumber >= submissionBlockNumber + votingPeriod + executionDelay
+
+  return canExecuteProposal
+}
+
+/**
+ * Although a proposal can be InProgress, there's several substates like:
+ * InProgress - can be voted on
+ * InProgressExecutionDelay - cannot be voted on, but not yet ready for execution
+ * InProgressAwaitingExecution - can be executed
+ * @param proposal Proposal object
+ */
+export const useGetInProgressProposalSubstate = (proposal: Proposal) => {
+  const { votingPeriod } = useVotingPeriod()
+  const { executionDelay } = useExecutionDelay()
+  const currentBlockNumber = useEthBlockNumber()
+
+  if (!proposal || !proposal.submissionBlockNumber)
+    return InProgressOutcomeSubstates.InProgress
+
+  const { submissionBlockNumber } = proposal
+  if (
+    !submissionBlockNumber ||
+    !votingPeriod ||
+    !executionDelay ||
+    !currentBlockNumber
+  )
+    return InProgressOutcomeSubstates.InProgress
+
+  if (
+    currentBlockNumber >=
+    submissionBlockNumber + votingPeriod + executionDelay
+  )
+    return InProgressOutcomeSubstates.InProgressAwaitingExecution
+  else if (currentBlockNumber >= submissionBlockNumber + votingPeriod)
+    return InProgressOutcomeSubstates.InProgressExecutionDelay
+  else return InProgressOutcomeSubstates.InProgress
 }
