@@ -163,8 +163,6 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
 
   const { status, error, submitVote } = useSubmitVote(reset)
 
-  const { executeProposal } = useExecuteProposal(reset)
-
   const [currentVote, setCurrentVote] = useState<Vote>(userVote)
   const [newVote, setNewVote] = useState<Vote>(userVote)
   useEffect(() => {
@@ -183,10 +181,6 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
     setNewVote(Vote.No)
     setIsConfirmModalOpen(true)
   }, [setNewVote, setIsConfirmModalOpen])
-
-  const onExecuteProposal = useCallback(() => {
-    executeProposal(proposal.proposalId)
-  }, [executeProposal, proposal])
 
   const onConfirm = useCallback(() => {
     if (!!newVote) {
@@ -230,6 +224,39 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
   const hasMetQuorum = proposal
     ? totalMagnitudeVoted.gte(proposal.quorum)
     : false
+
+  // execute proposal
+  const {
+    executeProposal,
+    error: executeError,
+    status: executeStatus
+  } = useExecuteProposal(reset)
+  const [isExecuteConfirmModalOpen, setIsExecuteConfirmModalOpen] = useState(
+    false
+  )
+  const onExecuteCloseConfirm = useCallback(
+    () => setIsExecuteConfirmModalOpen(false),
+    []
+  )
+
+  const onExecuteProposal = useCallback(() => {
+    setIsExecuteConfirmModalOpen(true)
+  }, [setIsExecuteConfirmModalOpen])
+
+  const onExecuteConfirm = useCallback(() => {
+    executeProposal(proposal.proposalId)
+  }, [executeProposal, proposal])
+
+  useEffect(() => {
+    setIsExecuteConfirmModalOpen(false)
+    setReset(true)
+  }, [setIsExecuteConfirmModalOpen, setReset])
+
+  const confirmExecuteProposalBox = (
+    <StandaloneBox className={styles.confirmation}>
+      {`Exceuting proposal ${proposal?.proposalId}`}
+    </StandaloneBox>
+  )
 
   return (
     <Paper className={styles.container}>
@@ -313,6 +340,7 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
           <Loading />
         </div>
       )}
+      {/* submit vote modal */}
       <ConfirmTransactionModal
         withArrow={false}
         isOpen={isConfirmModalOpen}
@@ -321,6 +349,16 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
         topBox={submitVoteBox}
         error={error}
         status={status}
+      />
+      {/* execute proposal modal */}
+      <ConfirmTransactionModal
+        withArrow={false}
+        isOpen={isExecuteConfirmModalOpen}
+        onClose={onExecuteCloseConfirm}
+        onConfirm={onExecuteConfirm}
+        topBox={confirmExecuteProposalBox}
+        error={executeError}
+        status={executeStatus}
       />
     </Paper>
   )
