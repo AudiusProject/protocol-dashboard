@@ -12,12 +12,7 @@ import {
   setVotingPeriod
 } from './slice'
 import { useEffect } from 'react'
-import {
-  Proposal,
-  ProposalEvent,
-  Outcome,
-  InProgressOutcomeSubstates
-} from 'types'
+import { Proposal, ProposalEvent, Outcome } from 'types'
 import {
   useTotalStaked,
   useDispatchBasedOnBlockNumber,
@@ -269,8 +264,8 @@ export const useGetInProgressProposalSubstate = (proposal: Proposal) => {
     currentBlockNumber >=
     submissionBlockNumber + votingPeriod + executionDelay
   )
-    return InProgressOutcomeSubstates.InProgressAwaitingExecution
+    return Outcome.InProgressAwaitingExecution
   else if (currentBlockNumber >= submissionBlockNumber + votingPeriod)
-    return InProgressOutcomeSubstates.InProgressExecutionDelay
-  else return InProgressOutcomeSubstates.InProgress
+    return Outcome.InProgressExecutionDelay
+  else return Outcome.InProgress
 }

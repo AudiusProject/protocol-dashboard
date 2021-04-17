@@ -4,14 +4,7 @@ import { Utils } from '@audius/libs'
 import Paper from 'components/Paper'
 import VoteMeter from 'components/VoteMeter'
 import ProposalStatusBadge from 'components/ProposalStatusBadge'
-import {
-  Proposal,
-  Outcome,
-  Vote,
-  Address,
-  Status,
-  InProgressOutcomeSubstates
-} from 'types'
+import { Proposal, Outcome, Vote, Address, Status } from 'types'
 import Button, { ButtonType } from 'components/Button'
 import { leftPadZero, getDate, getHumanReadableTime } from 'utils/format'
 import { ReactComponent as IconThumbUp } from 'assets/img/iconThumbUp.svg'
@@ -59,7 +52,11 @@ type VoteCTAProps = {
   onExecuteProposal: () => void
   currentVote: Vote
   submissionBlock: number
-  inProgressProposalSubstate: null | InProgressOutcomeSubstates
+  inProgressProposalSubstate:
+    | null
+    | Outcome.InProgress
+    | Outcome.InProgressAwaitingExecution
+    | Outcome.InProgressExecutionDelay
 }
 
 const VoteCTA: React.FC<VoteCTAProps> = ({
@@ -96,8 +93,7 @@ const VoteCTA: React.FC<VoteCTAProps> = ({
         </div>
       </div>
       {isUserStaker &&
-        inProgressProposalSubstate ===
-          InProgressOutcomeSubstates.InProgressAwaitingExecution && (
+        inProgressProposalSubstate === Outcome.InProgressAwaitingExecution && (
           <div>
             <Button
               text="Evalute Proposal"
@@ -106,30 +102,28 @@ const VoteCTA: React.FC<VoteCTAProps> = ({
             />
           </div>
         )}
-      {isUserStaker &&
-        inProgressProposalSubstate ===
-          InProgressOutcomeSubstates.InProgress && (
-          <div className={styles.vote}>
-            <Button
-              leftIcon={<IconThumbUp />}
-              className={styles.voteFor}
-              text={messages.voteFor}
-              type={ButtonType.GREEN}
-              onClick={onVoteFor}
-              isDepressed={currentVote === Vote.Yes}
-              isDisabled={currentVote === Vote.Yes}
-            />
-            <Button
-              leftIcon={<IconThumbDown />}
-              className={styles.voteAgainst}
-              text={messages.voteAgainst}
-              type={ButtonType.RED}
-              onClick={onVoteAgainst}
-              isDepressed={currentVote === Vote.No}
-              isDisabled={currentVote === Vote.No}
-            />
-          </div>
-        )}
+      {isUserStaker && inProgressProposalSubstate === Outcome.InProgress && (
+        <div className={styles.vote}>
+          <Button
+            leftIcon={<IconThumbUp />}
+            className={styles.voteFor}
+            text={messages.voteFor}
+            type={ButtonType.GREEN}
+            onClick={onVoteFor}
+            isDepressed={currentVote === Vote.Yes}
+            isDisabled={currentVote === Vote.Yes}
+          />
+          <Button
+            leftIcon={<IconThumbDown />}
+            className={styles.voteAgainst}
+            text={messages.voteAgainst}
+            type={ButtonType.RED}
+            onClick={onVoteAgainst}
+            isDepressed={currentVote === Vote.No}
+            isDisabled={currentVote === Vote.No}
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -202,11 +196,9 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
 
   const isActive =
     proposal?.outcome === Outcome.InProgress &&
-    (inProgressProposalSubstate === InProgressOutcomeSubstates.InProgress ||
-      inProgressProposalSubstate ===
-        InProgressOutcomeSubstates.InProgressAwaitingExecution ||
-      inProgressProposalSubstate ===
-        InProgressOutcomeSubstates.InProgressExecutionDelay)
+    (inProgressProposalSubstate === Outcome.InProgress ||
+      inProgressProposalSubstate === Outcome.InProgressAwaitingExecution ||
+      inProgressProposalSubstate === Outcome.InProgressExecutionDelay)
 
   const evaluatedBlockTimestamp = proposal?.evaluatedBlock?.timestamp ?? null
 

@@ -12,6 +12,14 @@ const messages = {
 
 const outcomeMapping = {
   [Outcome.InProgress]: { text: messages.open, style: styles.open },
+  [Outcome.InProgressExecutionDelay]: {
+    text: messages.open,
+    style: styles.open
+  },
+  [Outcome.InProgressAwaitingExecution]: {
+    text: messages.open,
+    style: styles.open
+  },
   [Outcome.Rejected]: { text: messages.failed, style: styles.failed },
   [Outcome.ApprovedExecuted]: { text: messages.passed, style: styles.passed },
   [Outcome.QuorumNotMet]: { text: messages.failed, style: styles.failed },
