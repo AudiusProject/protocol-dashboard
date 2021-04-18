@@ -37,6 +37,7 @@ const messages = {
   voteFor: 'Vote For',
   voteAgainst: 'Vote Against',
   timeRemaining: 'Est. Time Remaining',
+  votingEnded: 'Voting Ended',
   targetBlock: 'Target Block',
   notVoted: 'NOT-VOTED',
   voted: 'VOTED',
@@ -79,13 +80,18 @@ const VoteCTA: React.FC<VoteCTAProps> = ({
 
   return (
     <div className={styles.voteCTA}>
-      <div className={styles.timeRemaining}>
-        {timeRemaining !== null && (
+      <div className={styles.statusContainer}>
+        {inProgressProposalSubstate === Outcome.InProgress && timeRemaining !== null && (
           <>
             <div className={styles.title}>{messages.timeRemaining}</div>
-            <div className={styles.time}>
+            <div className={styles.message}>
               {getHumanReadableTime(timeRemaining)}
             </div>
+          </>
+        )}
+        {inProgressProposalSubstate !== Outcome.InProgress && (
+          <>
+            <div className={styles.message}>{messages.votingEnded}</div>
           </>
         )}
         <div className={styles.blocks}>
