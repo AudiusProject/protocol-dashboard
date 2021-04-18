@@ -65,7 +65,7 @@
   border-bottom: 1px solid var(--neutral-light-8);
 }
 
-.voteStatusContainer {
+.timeRemaining {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -93,7 +93,7 @@
   align-items: flex-start;
 }
 
-.message {
+.time {
   font-weight: 800;
   font-size: var(--font-4xl);
   line-height: 44px;
