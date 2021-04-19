@@ -95,7 +95,7 @@ const pinGABuild = async () => {
   return cid
 }
 
-const pinPinata = async (cid, name, addr) => {
+const pinPinata = async (cid, addr) => {
   const options = {
     pinataMetadata: {
       name: `Dashboard build ${env} ${cid} - ${new Date().toISOString()}`
