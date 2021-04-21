@@ -175,7 +175,7 @@ const ExecuteProposalCTA: React.FC<ExecuteProposalCTAProps> = ({
 
   return (
     <div className={styles.voteCTA}>
-      <div className={styles.statusContainer}>
+      <div className={styles.voteStatusContainer}>
         <div className={styles.title}>{messages.awaitExecuteProposal}</div>
       </div>
       {isUserStaker && (
@@ -337,8 +337,7 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
           )}
           {isActive &&
             inProgressProposalSubstate === Outcome.InProgressExecutionDelay &&
-            proposalMilestoneBlocks &&
-            proposalMilestoneBlocks.votingDeadlineBlock && (
+            proposalMilestoneBlocks?.votingDeadlineBlock && (
               <ExecutionDelayCTA
                 votingDeadlineBlock={
                   proposalMilestoneBlocks.votingDeadlineBlock
