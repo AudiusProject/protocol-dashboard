@@ -230,6 +230,12 @@ export const useProposalTimeRemaining = (submissionBlock: number) => {
   return remaining
 }
 
+export const useExecutionDelayTimeRemaining = (votingDeadlineBlock: number) => {
+  const { executionDelay } = useExecutionDelay()
+  const remaining = useTimeRemaining(votingDeadlineBlock, executionDelay)
+  return remaining
+}
+
 export const useAmountAbstained = (proposal: Proposal) => {
   const totalStaked = useTotalStaked()
   if (!proposal || !totalStaked) return null
@@ -268,4 +274,35 @@ export const useGetInProgressProposalSubstate = (proposal: Proposal) => {
   else if (currentBlockNumber >= submissionBlockNumber + votingPeriod)
     return Outcome.InProgressExecutionDelay
   else return Outcome.InProgress
+}
+
+/**
+ * Calculate the block numbers for major milestones along a proposal's lifetime
+ * submissionBlock - block where the submission occurred
+ * votingDeadlineBlock - block before which all voting must occure
+ * executionDeadlineBlock - block after which a proposal can be executed
+ * @param proposal Proposal object
+ */
+export const useProposalMilestoneBlocks = (proposal: Proposal) => {
+  const { votingPeriod } = useVotingPeriod()
+  const { executionDelay } = useExecutionDelay()
+  const currentBlockNumber = useEthBlockNumber()
+
+  if (!proposal || !proposal.submissionBlockNumber) return null
+
+  const { submissionBlockNumber } = proposal
+  if (
+    !submissionBlockNumber ||
+    !votingPeriod ||
+    !executionDelay ||
+    !currentBlockNumber
+  )
+    return null
+
+  return {
+    submissionBlock: submissionBlockNumber,
+    votingDeadlineBlock: submissionBlockNumber + votingPeriod,
+    executionDeadlineBlock:
+      submissionBlockNumber + votingPeriod + executionDelay
+  }
 }
