@@ -286,18 +286,11 @@ export const useGetInProgressProposalSubstate = (proposal: Proposal) => {
 export const useProposalMilestoneBlocks = (proposal: Proposal) => {
   const { votingPeriod } = useVotingPeriod()
   const { executionDelay } = useExecutionDelay()
-  const currentBlockNumber = useEthBlockNumber()
 
   if (!proposal || !proposal.submissionBlockNumber) return null
 
   const { submissionBlockNumber } = proposal
-  if (
-    !submissionBlockNumber ||
-    !votingPeriod ||
-    !executionDelay ||
-    !currentBlockNumber
-  )
-    return null
+  if (!submissionBlockNumber || !votingPeriod || !executionDelay) return null
 
   return {
     submissionBlock: submissionBlockNumber,
