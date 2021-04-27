@@ -125,12 +125,6 @@ const ExecutionDelayCTA: React.FC<ExecutionDelayCTAProps> = ({
     votingDeadlineBlock
   )
 
-  const { status: userStatus, user: accountUser } = useAccountUser()
-  const activeStake = accountUser
-    ? getActiveStake(accountUser)
-    : Utils.toBN('0')
-  const isUserStaker = userStatus === Status.Success && !activeStake.isZero()
-
   return (
     <div className={styles.voteCTA}>
       <div className={styles.voteStatusContainer}>
@@ -146,16 +140,14 @@ const ExecutionDelayCTA: React.FC<ExecutionDelayCTAProps> = ({
           <span>{`${messages.targetBlock}: ${targetBlock}`}</span>
         </div>
       </div>
-      {isUserStaker && (
-        <div>
-          <Button
-            text={messages.executeProposal}
-            type={ButtonType.GREEN}
-            isDepressed={true}
-            isDisabled={true}
-          />
-        </div>
-      )}
+      <div>
+        <Button
+          text={messages.executeProposal}
+          type={ButtonType.GREEN}
+          isDepressed={true}
+          isDisabled={true}
+        />
+      </div>
     </div>
   )
 }
@@ -167,26 +159,18 @@ type ExecuteProposalCTAProps = {
 const ExecuteProposalCTA: React.FC<ExecuteProposalCTAProps> = ({
   onExecuteProposal
 }) => {
-  const { status: userStatus, user: accountUser } = useAccountUser()
-  const activeStake = accountUser
-    ? getActiveStake(accountUser)
-    : Utils.toBN('0')
-  const isUserStaker = userStatus === Status.Success && !activeStake.isZero()
-
   return (
     <div className={styles.voteCTA}>
       <div className={styles.voteStatusContainer}>
         <div className={styles.title}>{messages.awaitExecuteProposal}</div>
       </div>
-      {isUserStaker && (
         <div>
-          <Button
-            text={messages.executeProposal}
-            type={ButtonType.GREEN}
-            onClick={onExecuteProposal}
-          />
-        </div>
-      )}
+        <Button
+          text={messages.executeProposal}
+          type={ButtonType.GREEN}
+          onClick={onExecuteProposal}
+        />
+      </div>
     </div>
   )
 }
@@ -353,7 +337,7 @@ const ProposalHero: React.FC<ProposalHeroProps> = ({
             <div className={styles.left}>
               <div className={styles.description}>{proposal.name}</div>
               <div className={styles.info}>
-                <ProposalStatusBadge outcome={proposal.outcome} />
+                <ProposalStatusBadge outcome={inProgressProposalSubstate || proposal.outcome} />
                 <div className={styles.id}>
                   {leftPadZero(proposal.proposalId, 3)}
                 </div>

@@ -269,11 +269,12 @@ export const useGetInProgressProposalSubstate = (proposal: Proposal) => {
   if (
     currentBlockNumber >=
     submissionBlockNumber + votingPeriod + executionDelay
-  )
+  ) {
     return Outcome.InProgressAwaitingExecution
-  else if (currentBlockNumber >= submissionBlockNumber + votingPeriod)
+  } else if (currentBlockNumber >= submissionBlockNumber + votingPeriod) {
     return Outcome.InProgressExecutionDelay
-  else return Outcome.InProgress
+  }
+  return Outcome.InProgress
 }
 
 /**

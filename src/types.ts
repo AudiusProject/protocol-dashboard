@@ -123,7 +123,7 @@ export type VoteEvent = {
 
 export enum Outcome {
   InProgress = 'InProgress', // Proposal is active and can be voted on.
-  InProgressExecutionDelay = 'InProgressExecutionDelay', //Proposal is active but cannot be voted on because it's in execution delay
+  InProgressExecutionDelay = 'InProgressExecutionDelay', // Proposal is active but cannot be voted on because it's in execution delay
   InProgressAwaitingExecution = 'InProgressAwaitingExecution', //Proposal has passed execution delay and can be executed
   Rejected = 'Rejected', // Proposal votingPeriod has closed and vote failed to pass. Proposal will not be executed.
   ApprovedExecuted = 'ApprovedExecuted', // Proposal votingPeriod has closed and vote passed. Proposal was successfully executed.

@@ -5,7 +5,9 @@ import { Outcome } from 'types'
 
 const messages = {
   open: 'open',
-  executionPending: 'evaluating',
+  executionPending: 'executing',
+  cooldown: 'cooldown',
+  ready: 'awaiting execution',
   passed: 'passed',
   failed: 'failed'
 }
@@ -13,12 +15,12 @@ const messages = {
 const outcomeMapping = {
   [Outcome.InProgress]: { text: messages.open, style: styles.open },
   [Outcome.InProgressExecutionDelay]: {
-    text: messages.open,
-    style: styles.open
+    text: messages.cooldown,
+    style: styles.pending
   },
   [Outcome.InProgressAwaitingExecution]: {
-    text: messages.open,
-    style: styles.open
+    text: messages.ready,
+    style: styles.pending
   },
   [Outcome.Rejected]: { text: messages.failed, style: styles.failed },
   [Outcome.ApprovedExecuted]: { text: messages.passed, style: styles.passed },
@@ -29,7 +31,7 @@ const outcomeMapping = {
   },
   [Outcome.Evaluating]: {
     text: messages.executionPending,
-    style: styles.executionPending
+    style: styles.pending
   },
   [Outcome.Vetoed]: { text: messages.failed, style: styles.failed },
   [Outcome.TargetContractAddressChanged]: {
