@@ -194,7 +194,9 @@ export function fetchPlays(
   return async dispatch => {
     let metric = await fetchTimeSeries('plays', bucket, nodes, true)
     if (metric !== MetricError.ERROR) {
-      metric = metric.filter(m => m.timestamp !== '1620345600' && m.timestamp !== '1620259200')
+      metric = metric.filter(
+        m => m.timestamp !== '1620345600' && m.timestamp !== '1620259200'
+      )
     }
     dispatch(setPlays({ metric, bucket }))
   }
