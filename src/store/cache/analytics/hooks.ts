@@ -363,8 +363,7 @@ export function fetchTrailingTopGenres(
       const startTime = getStartTime(bucket)
       const json = await fetchUntilSuccess(
         nodes.map(
-          node =>
-            `${node.endpoint}/v1/metrics/genres?start_time=${startTime}`
+          node => `${node.endpoint}/v1/metrics/genres?start_time=${startTime}`
         )
       )
 

@@ -32,10 +32,7 @@ export function fetchTopTracks(
   return async (dispatch, getState, aud) => {
     try {
       const json = await fetchUntilSuccess(
-        nodes.map(
-          node =>
-           `${node.endpoint}/v1/tracks/trending?limit=4`
-        )
+        nodes.map(node => `${node.endpoint}/v1/tracks/trending?limit=4`)
       )
       const tracks: Track[] = json.data.slice(0, 4).map((d: any) => ({
         title: d.title,
@@ -59,8 +56,7 @@ export function fetchTopPlaylists(
     try {
       const json = await fetchUntilSuccess(
         nodes.map(
-          node =>
-            `${node.endpoint}/v1/playlists/top?type=playlist&limit=5`
+          node => `${node.endpoint}/v1/playlists/top?type=playlist&limit=5`
         )
       )
       const playlists: Playlist[] = json.data.map((d: any) => ({
@@ -85,8 +81,7 @@ export function fetchTopAlbums(
     try {
       const json = await fetchUntilSuccess(
         nodes.map(
-          node =>
-            `${node.endpoint}/v1/playlists/top?type=album&limit=5`
+          node => `${node.endpoint}/v1/playlists/top?type=album&limit=5`
         )
       )
       const albums: Playlist[] = json.data.map((d: any) => ({
