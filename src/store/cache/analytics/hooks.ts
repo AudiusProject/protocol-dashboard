@@ -357,8 +357,6 @@ export function fetchTrailingTopGenres(
   nodes: DiscoveryProvider[]
 ): ThunkAction<void, AppState, Audius, Action<string>> {
   return async dispatch => {
-    const node = nodes[0]
-    if (!node) return
     try {
       const startTime = getStartTime(bucket)
       const json = await fetchUntilSuccess(
