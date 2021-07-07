@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import Button from 'components/Button'
+import { useSelector } from 'react-redux'
 import clsx from 'clsx'
 
+import Button from 'components/Button'
 import Paper from 'components/Paper'
 import { ButtonType } from '@audius/stems'
 import DelegateStakeModal from 'components/DelegateStakeModal'
@@ -26,7 +27,6 @@ import { createStyles } from 'utils/mobile'
 import UserImage from 'components/UserImage'
 import Bounds from 'components/Bounds'
 import Tooltip, { Position } from 'components/Tooltip'
-import { useSelector } from 'react-redux'
 import { getDelegatorInfo } from 'store/cache/protocol/hooks'
 
 const styles = createStyles({ desktopStyles, mobileStyles })
@@ -132,7 +132,8 @@ const UserInfo = ({
     isLoggedIn && !isOwner && claimStatus === Status.Success && hasClaim
 
   const isClaimDisabled = !isValidBounds
-  const isDelegatorLimitReached = maxDelegators !== undefined &&
+  const isDelegatorLimitReached =
+    maxDelegators !== undefined &&
     (user as Operator)?.delegators?.length >= maxDelegators
 
   return (
