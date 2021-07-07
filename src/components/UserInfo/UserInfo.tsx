@@ -26,10 +26,10 @@ import { createStyles } from 'utils/mobile'
 import UserImage from 'components/UserImage'
 import Bounds from 'components/Bounds'
 import Tooltip, { Position } from 'components/Tooltip'
+import { useSelector } from 'react-redux'
+import { getDelegatorInfo } from 'store/cache/protocol/hooks'
 
 const styles = createStyles({ desktopStyles, mobileStyles })
-
-const DELEGATOR_LIMIT = 175
 
 const messages = {
   delegate: 'DELEGATE',
@@ -63,6 +63,7 @@ const UserInfo = ({
   const { name, wallet } = user
   const { isLoggedIn } = useAccount()
   const [isOpen, setIsOpen] = useState(false)
+  const { maxDelegators } = useSelector(getDelegatorInfo)
   const onClick = useCallback(() => setIsOpen(true), [setIsOpen])
   const onClose = useCallback(() => setIsOpen(false), [setIsOpen])
   const { hasClaim, status: claimStatus } = usePendingClaim(wallet)
@@ -131,7 +132,8 @@ const UserInfo = ({
     isLoggedIn && !isOwner && claimStatus === Status.Success && hasClaim
 
   const isClaimDisabled = !isValidBounds
-  const isDelegatorLimitReached = (user as Operator)?.delegators?.length >= DELEGATOR_LIMIT
+  const isDelegatorLimitReached = maxDelegators !== undefined &&
+    (user as Operator)?.delegators?.length >= maxDelegators
 
   return (
     <>
