@@ -154,7 +154,6 @@ const configureLibsWithAccount = async () => {
       configuredMetamaskWeb3,
       metamaskAccount
     ),
-    discoveryProviderConfig: audius.configDiscoveryProvider(),
     isServer: false
   }
   const libs = new audius(audiusLibsConfig)
