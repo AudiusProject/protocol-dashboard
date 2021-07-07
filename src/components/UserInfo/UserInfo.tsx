@@ -29,12 +29,15 @@ import Tooltip, { Position } from 'components/Tooltip'
 
 const styles = createStyles({ desktopStyles, mobileStyles })
 
+const DELEGATOR_LIMIT = 175
+
 const messages = {
   delegate: 'DELEGATE',
   undelegate: 'UNDELEGATE',
   claim: 'CLAIM',
   makeClaim: 'Make Claim',
-  claimOutOfBounds: 'Total stake out of bounds'
+  claimOutOfBounds: 'Total stake out of bounds',
+  delegatorLimitReached: 'This operator has reached its delegator limit'
 }
 
 type UserInfoProps = {
@@ -128,16 +131,24 @@ const UserInfo = ({
     isLoggedIn && !isOwner && claimStatus === Status.Success && hasClaim
 
   const isClaimDisabled = !isValidBounds
+  const isDelegatorLimitReached = (user as Operator)?.delegators?.length >= DELEGATOR_LIMIT
 
   return (
     <>
       {showDelegate && (
         <div className={styles.buttonContainer}>
-          <Button
-            text={messages.delegate}
-            type={ButtonType.PRIMARY}
-            onClick={onClick}
-          />
+          <Tooltip
+            position={Position.TOP}
+            text={messages.delegatorLimitReached}
+            isDisabled={!isDelegatorLimitReached}
+          >
+            <Button
+              text={messages.delegate}
+              type={ButtonType.PRIMARY}
+              isDisabled={isDelegatorLimitReached}
+              onClick={onClick}
+            />
+          </Tooltip>
           <DelegateStakeModal
             serviceOperatorWallet={wallet}
             isOpen={isOpen}
@@ -170,7 +181,6 @@ const UserInfo = ({
             position={Position.TOP}
             text={messages.claimOutOfBounds}
             isDisabled={!isClaimDisabled}
-            className={styles.claimDisabledTooltip}
           >
             <Button
               text={messages.claim}
