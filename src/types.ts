@@ -250,6 +250,7 @@ export type Playlist = {
   handle: string
   artwork: string
   plays: number
+  favorites: number
   url: string
 }
 
@@ -258,5 +259,6 @@ export type Album = {
   handle: string
   artwork: string
   plays: number
+  favorites: number,
   url: string
 }

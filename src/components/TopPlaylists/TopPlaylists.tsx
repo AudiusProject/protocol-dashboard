@@ -9,7 +9,7 @@ import { formatShortNumber } from 'utils/format'
 import styles from './TopPlaylists.module.css'
 
 const messages = {
-  title: 'Top Playlists'
+  title: 'Top Playlists This Week'
 }
 
 type OwnProps = {}
@@ -38,7 +38,7 @@ const TopPlaylists: React.FC<TopPlaylistsProps> = () => {
             <div className={styles.handle}>{p.handle}</div>
           </div>
           <div className={styles.plays}>
-            {`${formatShortNumber(p.plays)} Plays`}
+            {`${formatShortNumber(p.favorites)} Favorites`}
           </div>
         </div>
       ))

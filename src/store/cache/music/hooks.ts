@@ -55,15 +55,16 @@ export function fetchTopPlaylists(
 ): ThunkAction<void, AppState, Audius, Action<string>> {
   return async (dispatch, getState, aud) => {
     try {
+      const limit = 5
       const data = await fetchWithLibs({
-        endpoint: '/v1/playlists/top',
-        queryParams: { type: 'playlist', limit: 5 }
+        endpoint: '/v1/playlists/trending'
       })
-      const playlists: Playlist[] = data.map((d: any) => ({
+      const playlists: Playlist[] = data.slice(0, limit).map((d: any) => ({
         title: d.playlist_name,
         handle: d.user.handle,
         artwork: d.artwork?.['480x480'] ?? imageBlank,
         plays: d.total_play_count,
+        favorites: d.favorite_count,
         url: `${AUDIUS_URL}/playlists/${d.id}`
       }))
       dispatch(setTopPlaylists({ playlists }))
@@ -88,6 +89,7 @@ export function fetchTopAlbums(
         handle: d.user.handle,
         artwork: d.artwork?.['480x480'] ?? imageBlank,
         plays: d.total_play_count,
+        favorites: d.favorite_count,
         url: `${AUDIUS_URL}/playlists/${d.id}`
       }))
       dispatch(setTopAlbums({ albums }))
