@@ -251,6 +251,7 @@ export type Playlist = {
   artwork: string
   plays: number
   favorites: number
+  trackCount: number
   url: string
 }
 
@@ -260,5 +261,6 @@ export type Album = {
   artwork: string
   plays: number
   favorites: number,
+  trackCount: number
   url: string
 }

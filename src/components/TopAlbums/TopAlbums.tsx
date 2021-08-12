@@ -4,8 +4,6 @@ import Paper from 'components/Paper'
 import React, { useCallback } from 'react'
 import { useTopAlbums } from 'store/cache/music/hooks'
 import { MusicError } from 'store/cache/music/slice'
-import { formatShortNumber } from 'utils/format'
-
 import styles from './TopAlbums.module.css'
 
 const messages = {
@@ -37,9 +35,6 @@ const TopAlbums: React.FC<TopAlbumsProps> = () => {
           <div className={styles.text}>
             <div className={styles.albumTitle}>{p.title}</div>
             <div className={styles.handle}>{p.handle}</div>
-          </div>
-          <div className={styles.plays}>
-            {`${formatShortNumber(p.favorites)} Favorites`}
           </div>
         </div>
       ))

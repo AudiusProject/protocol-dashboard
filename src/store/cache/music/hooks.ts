@@ -57,7 +57,7 @@ export function fetchTopPlaylists(
     try {
       const limit = 5
       const data = await fetchWithLibs({
-        endpoint: '/v1/playlists/trending'
+        endpoint: '/v1/full/playlists/trending'
       })
       const playlists: Playlist[] = data.slice(0, limit).map((d: any) => ({
         title: d.playlist_name,
@@ -65,6 +65,7 @@ export function fetchTopPlaylists(
         artwork: d.artwork?.['480x480'] ?? imageBlank,
         plays: d.total_play_count,
         favorites: d.favorite_count,
+        trackCount: d.track_count,
         url: `${AUDIUS_URL}/playlists/${d.id}`
       }))
       dispatch(setTopPlaylists({ playlists }))
