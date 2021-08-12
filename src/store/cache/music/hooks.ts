@@ -64,8 +64,6 @@ export function fetchTopPlaylists(
         handle: d.user.handle,
         artwork: d.artwork?.['480x480'] ?? imageBlank,
         plays: d.total_play_count,
-        favorites: d.favorite_count,
-        trackCount: d.track_count,
         url: `${AUDIUS_URL}/playlists/${d.id}`
       }))
       dispatch(setTopPlaylists({ playlists }))
@@ -90,7 +88,6 @@ export function fetchTopAlbums(
         handle: d.user.handle,
         artwork: d.artwork?.['480x480'] ?? imageBlank,
         plays: d.total_play_count,
-        favorites: d.favorite_count,
         url: `${AUDIUS_URL}/playlists/${d.id}`
       }))
       dispatch(setTopAlbums({ albums }))
