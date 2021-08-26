@@ -29,9 +29,28 @@ const ethProviderUrl =
 const ethOwnerWallet = process.env.REACT_APP_ETH_OWNER_WALLET
 const ethNetworkId = process.env.REACT_APP_ETH_NETWORK_ID
 
-const DISCOVERY_NODE_ALLOW_LIST = new Set([
-  'https://discoveryprovider.audius.prod-us-west-2.staked.cloud',
-  'https://discoveryprovider.audius3.prod-us-west-2.staked.cloud',
+const SOLANA_CLUSTER_ENDPOINT = process.env.REACT_APP_SOLANA_CLUSTER_ENDPOINT
+const WAUDIO_MINT_ADDRESS = process.env.REACT_APP_WAUDIO_MINT_ADDRESS
+const SOLANA_TOKEN_ADDRESS = process.env.REACT_APP_SOLANA_TOKEN_PROGRAM_ADDRESS
+const CLAIMABLE_TOKEN_PDA = process.env.REACT_APP_CLAIMABLE_TOKEN_PDA
+const SOLANA_FEE_PAYER_ADDRESS = process.env.REACT_APP_SOLANA_FEE_PAYER_ADDRESS
+
+const CLAIMABLE_TOKEN_PROGRAM_ADDRESS =
+  process.env.REACT_APP_CLAIMABLE_TOKEN_PROGRAM_ADDRESS
+const WORMHOLE_ADDRESS = process.env.REACT_APP_WORMHOLE_ADDRESS
+const REWARDS_MANAGER_PROGRAM_ID =
+  process.env.REACT_APP_REWARDS_MANAGER_PROGRAM_ID
+const REWARDS_MANAGER_PROGRAM_PDA =
+  process.env.REACT_APP_REWARDS_MANAGER_PROGRAM_PDA
+const REWARDS_MANAGER_TOKEN_PDA =
+  process.env.REACT_APP_REWARDS_MANAGER_TOKEN_PDA
+
+const IS_PRODUCTION = process.env.REACT_APP_ETH_NETWORK_ID && process.env.REACT_APP_ETH_NETWORK_ID === '1'
+
+const DISCOVERY_NODE_ALLOW_LIST = IS_PRODUCTION ? new Set([
+  'https://discoveryprovider.audius7.prod-us-west-2.staked.cloud',
+  'https://discoveryprovider.audius1.prod-us-west-2.staked.cloud',
+  'https://discoveryprovider.audius4.prod-us-west-2.staked.cloud',
   'https://discoveryprovider.audius2.prod-us-west-2.staked.cloud',
   'https://discoveryprovider.audius4.prod-us-west-2.staked.cloud',
   'https://discoveryprovider.audius1.prod-us-west-2.staked.cloud',
@@ -45,28 +64,35 @@ const DISCOVERY_NODE_ALLOW_LIST = new Set([
   'https://audius-discovery.nz.modulational.com',
   'https://dn2.monophonic.digital',
   'https://audius-dp.johannesburg.creatorseed.com',
+  'https://discoveryprovider3.audius.co',
   'https://dn1.monophonic.digital'
-])
+]) : undefined
 
 // Used to prevent two callbacks from firing triggering reload
 let willReload = false
 
+const getMetamaskChainId = async () => {
+  return parseInt(await window.ethereum.request({ method: 'eth_chainId' }), 16).toString()
+}
+
 /**
- * Metamask sometimes returns null for window.ethereum.networkVersion,
+ * Metamask sometimes returns null chainId,
  * so if this happens, try a second time after a slight delay
  */
 const getMetamaskIsOnEthMainnet = async () => {
-  let metamaskWeb3Network = window.ethereum.networkVersion
-  if (metamaskWeb3Network === ethNetworkId) return true
+  let chainId = await getMetamaskChainId()
+  if (chainId === ethNetworkId) return true
 
-  metamaskWeb3Network = await new Promise(resolve => {
+  // Try a second time just in case metamask was being slow to understand itself
+  chainId = await new Promise(resolve => {
     console.debug('Metamask network not matching, trying again')
-    setTimeout(() => {
-      resolve(window.ethereum.networkVersion)
+    setTimeout(async () => {
+      chainId = await getMetamaskChainId()
+      resolve(chainId)
     }, 2000)
   })
 
-  return metamaskWeb3Network === ethNetworkId
+  return chainId === ethNetworkId
 }
 
 export async function setup(this: AudiusClient): Promise<void> {
@@ -138,6 +164,18 @@ const configureReadOnlyLibs = async () => {
     ethProviderUrl,
     ethOwnerWallet
   )
+  const solanaWeb3Config = audius.configSolanaWeb3({
+    solanaClusterEndpoint: SOLANA_CLUSTER_ENDPOINT,
+    mintAddress: WAUDIO_MINT_ADDRESS,
+    solanaTokenAddress: SOLANA_TOKEN_ADDRESS,
+    claimableTokenPDA: CLAIMABLE_TOKEN_PDA,
+    feePayerAddress: SOLANA_FEE_PAYER_ADDRESS,
+    claimableTokenProgramAddress: CLAIMABLE_TOKEN_PROGRAM_ADDRESS,
+    rewardsManagerProgramId: REWARDS_MANAGER_PROGRAM_ID,
+    rewardsManagerProgramPDA: REWARDS_MANAGER_PROGRAM_PDA,
+    rewardsManagerTokenPDA: REWARDS_MANAGER_TOKEN_PDA,
+    useRelay: true
+  })
   const discoveryProviderConfig = audius.configDiscoveryProvider(
     DISCOVERY_NODE_ALLOW_LIST
   )
@@ -148,6 +186,7 @@ const configureReadOnlyLibs = async () => {
 
   let audiusLibsConfig = {
     ethWeb3Config,
+    solanaWeb3Config,
     discoveryProviderConfig,
     identityServiceConfig,
     isServer: false
@@ -160,9 +199,11 @@ const configureReadOnlyLibs = async () => {
 const configureLibsWithAccount = async () => {
   let configuredMetamaskWeb3 = await Utils.configureWeb3(
     window.web3.currentProvider,
-    ethNetworkId,
+    // Pass network version here for ethNetworkId. Libs uses an out of date network check
+    window.ethereum.networkVersion,
     false
   )
+  console.log(configuredMetamaskWeb3)
 
   let metamaskAccounts: any = await new Promise(resolve => {
     configuredMetamaskWeb3.eth.getAccounts((...args: any) => {
@@ -182,6 +223,19 @@ const configureLibsWithAccount = async () => {
       configuredMetamaskWeb3,
       metamaskAccount
     ),
+    solanaWeb3Config: audius.configSolanaWeb3({
+      solanaClusterEndpoint: SOLANA_CLUSTER_ENDPOINT,
+      mintAddress: WAUDIO_MINT_ADDRESS,
+      solanaTokenAddress: SOLANA_TOKEN_ADDRESS,
+      claimableTokenPDA: CLAIMABLE_TOKEN_PDA,
+      feePayerAddress: SOLANA_FEE_PAYER_ADDRESS,
+      claimableTokenProgramAddress: CLAIMABLE_TOKEN_PROGRAM_ADDRESS,
+      rewardsManagerProgramId: REWARDS_MANAGER_PROGRAM_ID,
+      rewardsManagerProgramPDA: REWARDS_MANAGER_PROGRAM_PDA,
+      rewardsManagerTokenPDA: REWARDS_MANAGER_TOKEN_PDA,
+      // useRelay: true,
+      feePayerSecretKey: new Uint8Array([88,221,3,91,144,28,166,30,226,126,149,132,158,36,59,145,35,172,85,179,175,126,219,120,8,244,230,14,76,121,22,142,103,69,22,24,17,145,24,223,140,213,17,129,82,174,248,79,240,19,175,21,78,86,46,35,218,8,124,208,80,149,57,190])
+    }),
     discoveryProviderConfig: audius.configDiscoveryProvider(
       DISCOVERY_NODE_ALLOW_LIST
     ),
