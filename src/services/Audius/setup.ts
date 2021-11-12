@@ -45,34 +45,46 @@ const REWARDS_MANAGER_PROGRAM_PDA =
 const REWARDS_MANAGER_TOKEN_PDA =
   process.env.REACT_APP_REWARDS_MANAGER_TOKEN_PDA
 
-const IS_PRODUCTION = process.env.REACT_APP_ETH_NETWORK_ID && process.env.REACT_APP_ETH_NETWORK_ID === '1'
+const IS_PRODUCTION =
+  process.env.REACT_APP_ETH_NETWORK_ID &&
+  process.env.REACT_APP_ETH_NETWORK_ID === '1'
 
-const DISCOVERY_NODE_ALLOW_LIST = IS_PRODUCTION ? new Set([
-  'https://discoveryprovider.audius7.prod-us-west-2.staked.cloud',
-  'https://discoveryprovider.audius1.prod-us-west-2.staked.cloud',
-  'https://discoveryprovider.audius4.prod-us-west-2.staked.cloud',
-  'https://discoveryprovider.audius2.prod-us-west-2.staked.cloud',
-  'https://discoveryprovider.audius4.prod-us-west-2.staked.cloud',
-  'https://discoveryprovider.audius1.prod-us-west-2.staked.cloud',
-  'https://discoveryprovider.audius7.prod-us-west-2.staked.cloud',
-  'https://discoveryprovider.audius5.prod-us-west-2.staked.cloud',
-  'https://audius-metadata-1.figment.io',
-  'https://audius-metadata-3.figment.io',
-  'https://audius-metadata-4.figment.io',
-  'https://dn-usa.audius.metadata.fyi',
-  'https://dn-jpn.audius.metadata.fyi',
-  'https://audius-discovery.nz.modulational.com',
-  'https://dn2.monophonic.digital',
-  'https://audius-dp.johannesburg.creatorseed.com',
-  'https://discoveryprovider3.audius.co',
-  'https://dn1.monophonic.digital'
-]) : undefined
+const IS_STAGING =
+  process.env.REACT_APP_ETH_NETWORK_ID &&
+  process.env.REACT_APP_ETH_NETWORK_ID === '3'
+
+const DISCOVERY_NODE_ALLOW_LIST = IS_PRODUCTION
+  ? new Set([
+      'https://discoveryprovider.audius7.prod-us-west-2.staked.cloud',
+      'https://discoveryprovider.audius1.prod-us-west-2.staked.cloud',
+      'https://discoveryprovider.audius4.prod-us-west-2.staked.cloud',
+      'https://discoveryprovider.audius2.prod-us-west-2.staked.cloud',
+      'https://discovery-au-01.audius.openplayer.org',
+      'https://dn-usa.audius.metadata.fyi',
+      'https://discoveryprovider.audius6.prod-us-west-2.staked.cloud',
+      'https://dn-jpn.audius.metadata.fyi',
+      'https://dn1.monophonic.digital',
+      'https://discoveryprovider.audius3.prod-us-west-2.staked.cloud',
+      'https://audius-discovery-1.altego.net',
+      'https://discoveryprovider.audius.prod-us-west-2.staked.cloud',
+      'https://discoveryprovider.audius.co',
+      'https://discoveryprovider.audius5.prod-us-west-2.staked.cloud',
+      'https://audius-discovery-2.altego.net',
+      'https://discoveryprovider2.audius.co',
+      'https://audius-dp.johannesburg.creatorseed.com',
+      'https://discoveryprovider3.audius.co',
+      'https://dn2.monophonic.digital'
+    ])
+  : undefined
 
 // Used to prevent two callbacks from firing triggering reload
 let willReload = false
 
 const getMetamaskChainId = async () => {
-  return parseInt(await window.ethereum.request({ method: 'eth_chainId' }), 16).toString()
+  return parseInt(
+    await window.ethereum.request({ method: 'eth_chainId' }),
+    16
+  ).toString()
 }
 
 /**
@@ -189,7 +201,8 @@ const configureReadOnlyLibs = async () => {
     solanaWeb3Config,
     discoveryProviderConfig,
     identityServiceConfig,
-    isServer: false
+    isServer: false,
+    isDebug: !IS_PRODUCTION && !IS_STAGING
   }
   const libs = new audius(audiusLibsConfig)
   await libs.init()
@@ -233,8 +246,7 @@ const configureLibsWithAccount = async () => {
       rewardsManagerProgramId: REWARDS_MANAGER_PROGRAM_ID,
       rewardsManagerProgramPDA: REWARDS_MANAGER_PROGRAM_PDA,
       rewardsManagerTokenPDA: REWARDS_MANAGER_TOKEN_PDA,
-      // useRelay: true,
-      feePayerSecretKey: new Uint8Array([88,221,3,91,144,28,166,30,226,126,149,132,158,36,59,145,35,172,85,179,175,126,219,120,8,244,230,14,76,121,22,142,103,69,22,24,17,145,24,223,140,213,17,129,82,174,248,79,240,19,175,21,78,86,46,35,218,8,124,208,80,149,57,190])
+      useRelay: true
     }),
     discoveryProviderConfig: audius.configDiscoveryProvider(
       DISCOVERY_NODE_ALLOW_LIST
@@ -242,7 +254,8 @@ const configureLibsWithAccount = async () => {
     identityServiceConfig: audius.configIdentityService(
       identityServiceEndpoint
     ),
-    isServer: false
+    isServer: false,
+    isDebug: !IS_PRODUCTION && !IS_STAGING
   }
   const libs = new audius(audiusLibsConfig)
   await libs.init()

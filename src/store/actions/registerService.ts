@@ -10,7 +10,6 @@ import { getAccountWallet } from 'store/account/hooks'
 import { fetchUser } from 'store/cache/user/hooks'
 import { getDiscoveryProvider } from 'store/cache/discoveryProvider/hooks'
 import { getContentNode } from 'store/cache/contentNode/hooks'
-import { shuffle } from 'lodash'
 
 function registerAudiusService(
   serviceType: ServiceType,
@@ -47,45 +46,27 @@ function registerAudiusService(
       }
 
       try {
-        const otherServices: string[] = await aud.libs.discoveryProvider.serviceSelector.findAll()
-        const attestEndpoints = shuffle(
-          otherServices.filter(s => s !== endpoint)
-        ).slice(0, 3)
-  
         const senderEthAddress = delegateOwnerWallet || wallet
-        const attestations = await Promise.all(attestEndpoints.map(async attestEndpoint => {
-          try {
-            const res = await fetch(
-              `${attestEndpoint}/v1/challenges/attest_sender?sender_eth_address=${senderEthAddress}`
-            )
-            const json = await res.json()
-            return {
-              ethAddress: json.data.owner_wallet,
-              signature: json.data.attestation
-            }
-          } catch (e) {
-            console.error(
-              `Failed to get attestations from other nodes ${attestEndpoints}`
-            )
+        const createSenderPublicReceipt = await aud.libs.Rewards.createSenderPublic(
+          {
+            senderEthAddress,
+            operatorEthAddress: wallet,
+            senderEndpoint: endpoint
           }
-        }))
-
-        // Register the server as a sender on the rewards manager
-        const receipt = await aud.libs.solanaWeb3Manager.createSender({
-          senderEthAddress,
-          operatorEthAddress: wallet,
-          attestations
-        })
-        console.info(`Successfully registered as a rewards sender ${receipt}`)
-        if (receipt.error) {
-          // Unfortunately, we can't error here because the eth and solana registration
-          // is not atomic. Eth registration has already gone through and we should show
-          // the service as registered from the user persp.
-          // Good news is someone else could register this node as a sender since this
-          // mechanism is permissionless
-          console.error(`Received error with code ${receipt.errorCode}`, receipt.error)
+        )
+        if (createSenderPublicReceipt.error) {
+          console.error(
+            `Received error with code ${createSenderPublicReceipt.errorCode}`,
+            createSenderPublicReceipt.error
+          )
+          throw new Error(createSenderPublicReceipt.errorCode)
         }
       } catch (e) {
+        // Unfortunately, we can't error here because the eth and solana registration
+        // is not atomic. Eth registration has already gone through and we should show
+        // the service as registered from the user persp.
+        // Good news is someone else could register this node as a sender since this
+        // mechanism is permissionless
         console.error('Failed to create new solana sender', e)
       }
 
