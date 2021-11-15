@@ -45,6 +45,7 @@ function registerAudiusService(
         spID = res.spID
       }
 
+      // Register the service on chain (solana)
       try {
         const senderEthAddress = delegateOwnerWallet || wallet
         const createSenderPublicReceipt = await aud.libs.Rewards.createSenderPublic(
