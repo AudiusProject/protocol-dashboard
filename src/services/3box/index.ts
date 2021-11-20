@@ -1,9 +1,13 @@
 import { Address } from 'types'
 import { TIMED_OUT_ERROR, withTimeout } from 'utils/fetch'
 import { getRandomDefaultImage } from 'utils/identicon'
-import { getProfile } from '3box/lib/api'
+// import { getProfile } from '3box/lib/api'
+
+import { Core } from '@self.id/core'
+import { getLegacy3BoxProfileAsBasicProfile } from '@self.id/3box-legacy'
 
 const ipfsGateway = 'https://ipfs.infura.io/ipfs/'
+const core = new Core({ ceramic: 'https://gateway.ceramic.network' })
 
 type User = {
   status?: string
@@ -22,8 +26,13 @@ export const get3BoxProfile = async (
   try {
     const user: User = { image }
 
+    let profile = await core.get('basicProfile', wallet + '@eip155:1')
+    if (!profile) {
+      profile = await getLegacy3BoxProfileAsBasicProfile(wallet)
+    }
+
     // Get the profile from 3box
-    const profile = (await withTimeout(getProfile(wallet), 3000)) as User
+    // const profile = (await withTimeout(getProfile(wallet), 3000)) as User
     if (profile.status === 'error') return user
 
     // Extract the name and image url
