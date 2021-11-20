@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "3box": "^1.19.1",
+    "3box": "^1.22.2",
     "@apollo/client": "^3.3.7",
     "@audius/libs": "^1.2.20",
     "@audius/stems": "^0.3.10",
