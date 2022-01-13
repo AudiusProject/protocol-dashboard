@@ -41,7 +41,7 @@
   "scripts": {
     "publish-scripts": "./scripts/publishScripts.sh",
     "configure-local-env": "node ./configureLocalEnv.js",
-    "start": "react-scripts start",
+    "start": "craco start",
     "start:dev:cloud": "npm run configure-local-env remote && env-cmd -f .env.dev.local npm start",
     "start:dev": "npm run configure-local-env && env-cmd -f .env.dev.local npm start",
     "start:stage": "env-cmd -f .env.stage npm start",
