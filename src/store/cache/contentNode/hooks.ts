@@ -66,6 +66,12 @@ export const getFilteredNodes = ({
 
 // -------------------------------- Helpers  --------------------------------
 
+type HealthCheckResponseData = {
+  data: {
+    country: string
+  }
+}
+
 const processNode = async (node: Node, aud: Audius): Promise<ContentNode> => {
   const version = await Audius.getNodeVersion(node.endpoint)
   const isDeregistered = node.endpoint === ''
@@ -76,12 +82,19 @@ const processNode = async (node: Node, aud: Audius): Promise<ContentNode> => {
       node.spID
     )
   }
+
+  const response = await fetch(`${node.endpoint}/health_check`)
+
+  const { data }: HealthCheckResponseData = await response.json()
+  const { country } = data
+
   return {
     ...node,
     ...previousInfo,
     type: ServiceType.ContentNode,
     version,
-    isDeregistered
+    isDeregistered,
+    country
   }
 }
 
