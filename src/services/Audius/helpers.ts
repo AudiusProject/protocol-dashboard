@@ -128,14 +128,12 @@ export function getWei(amount: BigNumber) {
   return amount.mul(Utils.toBN('1000000000000000000'))
 }
 
-type ServiceMetadata = {
+type NodeMetadata = {
   version: string
   country: string
 }
 
-export async function getNodeMetadata(
-  endpoint: string
-): Promise<ServiceMetadata> {
+export async function getNodeMetadata(endpoint: string): Promise<NodeMetadata> {
   try {
     const { data } = await fetchWithTimeout(
       `${endpoint}/health_check?verbose=true`
