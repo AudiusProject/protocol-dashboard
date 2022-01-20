@@ -133,7 +133,7 @@ type ServiceMetadata = {
   country: string
 }
 
-export async function getServiceMetadata(
+export async function getNodeMetadata(
   endpoint: string
 ): Promise<ServiceMetadata> {
   try {
