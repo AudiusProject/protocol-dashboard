@@ -143,6 +143,6 @@ export async function getNodeMetadata(endpoint: string): Promise<NodeMetadata> {
   } catch (e) {
     console.error(e)
     // Return no version if we couldn't find one, so we don't hold everything up
-    return { version: '', country: 'US' }
+    return { version: '', country: '' }
   }
 }
