@@ -82,8 +82,8 @@ const processNode = async (node: Node, aud: Audius): Promise<ContentNode> => {
     ...previousInfo,
     type: ServiceType.ContentNode,
     version,
-    isDeregistered,
-    country
+    country,
+    isDeregistered
   }
 }
 

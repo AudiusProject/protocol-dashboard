@@ -85,8 +85,8 @@ const processDP = async (
     ...previousInfo,
     type: ServiceType.DiscoveryProvider,
     version,
-    isDeregistered,
-    country
+    country,
+    isDeregistered
   }
 }
 
