@@ -72,7 +72,6 @@ const processDP = async (
   aud: Audius
 ): Promise<DiscoveryProvider> => {
   const { version, country } = await Audius.getNodeMetadata(node.endpoint)
-  console.log({ version, country })
   const isDeregistered = node.endpoint === ''
   let previousInfo = {}
   if (isDeregistered) {
