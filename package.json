@@ -4,16 +4,22 @@
   "private": true,
   "homepage": "./",
   "dependencies": {
-    "3box": "1.19.1",
+    "3box": "1.22.2",
     "@apollo/client": "3.3.7",
     "@audius/libs": "1.2.52",
     "@audius/stems": "0.3.10",
     "@craco/craco": "6.4.3",
+    "@ceramicnetwork/http-client": "1.5.0",
+    "@ceramicstudio/idx": "0.12.2",
     "@reduxjs/toolkit": "1.4.0",
+    "@self.id/3box-legacy": "0.1.0",
+    "@self.id/core": "0.2.0",
+    "@self.id/web": "^0.2.0",
     "chart.js": "2.9.3",
     "clsx": "1.1.1",
     "connected-react-router": "6.8.0",
     "dayjs": "1.8.36",
+    "esm": "3.2.25",
     "graphql": "15.5.0",
     "identicon.js": "2.3.3",
     "lodash": "4.17.20",
@@ -72,14 +78,10 @@
       "not dead",
       "not op_mini all"
     ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "development": []
   },
   "devDependencies": {
-    "@babel/preset-typescript": "7.10.4",
+    "@babel/preset-typescript": "7.16.0",
     "@openzeppelin/test-helpers": "0.5.6",
     "@pinata/sdk": "1.1.13",
     "@types/3box": "1.22.0",
