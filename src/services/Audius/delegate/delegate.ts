@@ -306,7 +306,9 @@ export default class Delegate {
 
   async getSPMinDelegationAmount(serviceProvider: Address): Promise<BN> {
     await this.aud.hasPermissions()
-    const minDelegationAmount = await this.getContract().getSPMinDelegationAmount({ serviceProvider })
+    const minDelegationAmount = await this.getContract().getSPMinDelegationAmount(
+      { serviceProvider }
+    )
     return minDelegationAmount
   }
 
