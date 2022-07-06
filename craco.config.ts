@@ -1,7 +1,5 @@
 import { Configuration, ProvidePlugin } from 'webpack'
 
-const isNative = process.env.REACT_APP_NATIVE_NAVIGATION_ENABLED === 'true'
-
 const cracoConfig = {
   webpack: {
     configure: (config: Configuration) => {
@@ -50,10 +48,6 @@ const cracoConfig = {
             stream: require.resolve('stream-browserify'),
             url: require.resolve('url'),
             zlib: require.resolve('browserify-zlib')
-          },
-          alias: {
-            ...config.resolve?.alias,
-            ...(isNative ? { react: 'react16' } : {})
           }
         },
         ignoreWarnings: [
