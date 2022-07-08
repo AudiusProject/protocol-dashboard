@@ -25,9 +25,7 @@ const transformIdxUser = (user: IdxUser): User => {
     const cid = imageSrc.substring(7)
     image = `${ipfsGateway}${cid}`
   }
-  return {
-    image
-  }
+  return { ...user, image }
 }
 
 export const getSelfIdProfile = async (
@@ -57,15 +55,8 @@ export const getSelfIdProfile = async (
   return profile
 }
 
-// NOTE: Look into storing the profiles in localstorage or indexdb.
-const cacheSelfId: {
-  [address: string]: User
-} = {}
-
 export const getUserProfile = async (wallet: string): Promise<User> => {
-  if (wallet in cacheSelfId) return cacheSelfId[wallet]
   const profile = await getSelfIdProfile(wallet)
-  if (!profile.noCache) cacheSelfId[wallet] = profile
   return {
     name: profile.name || wallet,
     image: profile.image
