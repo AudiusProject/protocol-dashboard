@@ -110,7 +110,7 @@ export function fetchAllProposals(): ThunkAction<
           proposal.evaluatedBlock = evaluationBlockNumber
         }
         return proposal
-      })
+      }).filter(Boolean)
     )
 
     const proposals = allProposals.filter(Boolean) as Proposal[]
