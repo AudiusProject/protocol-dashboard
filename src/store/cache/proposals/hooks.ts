@@ -92,7 +92,7 @@ export function fetchAllProposals(): ThunkAction<
 > {
   return async (dispatch, getState, aud) => {
     const proposalEvents = await aud.Governance.getProposals()
-    const proposals: Proposal[] = await Promise.all(
+    const allProposals: (Proposal | null)[] = await Promise.all(
       proposalEvents.map(async (p: ProposalEvent) => {
         const { proposalId, description, name } = p
         if (filteredProposals.has(proposalId)) {
@@ -110,8 +110,10 @@ export function fetchAllProposals(): ThunkAction<
           proposal.evaluatedBlock = evaluationBlockNumber
         }
         return proposal
-      }).filter(Boolean)
+      })
     )
+
+    const proposals = (allProposals.filter(Boolean) as Proposal[])
 
     dispatch(setAllProposals({ proposals }))
   }
