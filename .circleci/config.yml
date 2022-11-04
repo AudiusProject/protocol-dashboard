@@ -72,12 +72,13 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
-          name: Deploy to S3
+          name: deploy to s3
           command: |
             aws s3 cp ${FILENAME} s3://dashboard.staging.audius.org/${FILENAME} --cache-control max-age=0
       - run:
-          name: Armada publish
+          name: armada publish
           command: |
+            # TODO: Update these steps to use priv key for the wallet account
             npx armada-cli key import
             npx armada project publish <project-id> https://s3.us-west-1.amazonaws.com/app.audius.co/${FILENAME} ${HASH}
 
