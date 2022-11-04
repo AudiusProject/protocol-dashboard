@@ -80,7 +80,7 @@ jobs:
           command: |
             # TODO: Update these steps to use priv key for the wallet account
             npx armada-cli key import
-            npx armada project publish <project-id> https://s3.us-west-1.amazonaws.com/app.audius.co/${FILENAME} ${HASH}
+            npx armada-cli project publish <project-id> https://s3.us-west-1.amazonaws.com/app.audius.co/${FILENAME} ${HASH}
 
   build-prod:
     working_directory: ~/protocol-dashboard
