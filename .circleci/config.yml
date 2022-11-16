@@ -190,17 +190,17 @@ workflows:
             - Audius Client
           requires:
             - build-staging
-          # filters:
-          #   branches:
-          #     only: /^main$/
+          filters:
+            branches:
+              only: /^main$/
       - deploy-staging:
           context:
             - Armada
           requires:
             - pin-staging
-          # filters:
-          #   branches:
-          #     only: /^main$/
+          filters:
+            branches:
+              only: /^main$/
       - build-prod:
           requires:
             - init
