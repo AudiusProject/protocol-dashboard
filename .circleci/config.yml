@@ -54,8 +54,8 @@ jobs:
             timestamp=$(date +%s)
             filename="$(npx armada-cli bundle create build${timestamp} build)"
             hash="$(npx armada-cli bundle checksum $filename)"
-            echo "export FILENAME='$filename'" >> $BASH_ENV
-            echo "export HASH='$hash'" >> $BASH_ENV
+            echo "export FILENAME='$filename'" >> tmp.env
+            echo "export HASH='$hash'" >> tmp.env
       - persist_to_workspace:
           root: ./
           paths:
@@ -74,10 +74,12 @@ jobs:
       - run:
           name: deploy to s3
           command: |
+            source tmp.env
             aws s3 cp ${FILENAME} s3://dashboard.staging.audius.org/${FILENAME} --cache-control max-age=0
       - run:
           name: armada publish
           command: |
+            source tmp.env
             npx armada-cli project publish 0x3ad8aa4f87544323a9d1e5dd902f40c356527a7955687113db5f9a85ad579dc1 https://s3.us-west-1.amazonaws.com/dashboard.staging.audius.org/${FILENAME} ${HASH} --key=${ARMADA_ADMIN_PRIVATE_KEY}
 
   build-prod:
