@@ -61,7 +61,7 @@ jobs:
           paths:
             - ./*
 
-  deploy-staging:
+  pin-staging:
     working_directory: ~/protocol-dashboard
     docker:
       - image: circleci/python:2.7-jessie
@@ -76,6 +76,14 @@ jobs:
           command: |
             source tmp.env
             aws s3 cp ${FILENAME} s3://dashboard.staging.audius.org/${FILENAME} --cache-control max-age=0
+
+  deploy-staging:
+    working_directory: ~/protocol-dashboard
+    docker:
+      - image: circleci/ruby:2.6-node
+    steps:
+      - attach_workspace:
+          at: ./
       - run:
           name: armada publish
           command: |
@@ -174,12 +182,15 @@ workflows:
       - build-staging:
           requires:
             - init
+      - pin-staging:
+          requires:
+            - build-staging
       - deploy-staging:
           context:
             - Audius Client
             - Armada
           requires:
-            - build-staging
+            - pin-staging
           # filters:
           #   branches:
           #     only: /^main$/
