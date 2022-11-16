@@ -183,11 +183,15 @@ workflows:
           requires:
             - init
       - pin-staging:
-          requires:
-            - build-staging
-      - deploy-staging:
           context:
             - Audius Client
+          requires:
+            - build-staging
+          # filters:
+          #   branches:
+          #     only: /^main$/
+      - deploy-staging:
+          context:
             - Armada
           requires:
             - pin-staging
