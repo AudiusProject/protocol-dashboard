@@ -85,6 +85,9 @@ jobs:
       - attach_workspace:
           at: ./
       - run:
+          name: install deps
+          command: sudo apt install libsecret-1-0
+      - run:
           name: armada publish
           command: |
             source tmp.env
