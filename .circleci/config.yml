@@ -78,9 +78,7 @@ jobs:
       - run:
           name: armada publish
           command: |
-            # TODO: Update these steps to use priv key for the wallet account
-            npx armada-cli key import
-            npx armada-cli project publish <project-id> https://s3.us-west-1.amazonaws.com/app.audius.co/${FILENAME} ${HASH}
+            npx armada-cli project publish 0x3ad8aa4f87544323a9d1e5dd902f40c356527a7955687113db5f9a85ad579dc1 https://s3.us-west-1.amazonaws.com/dashboard.staging.audius.org/${FILENAME} ${HASH} --key=${ARMADA_ADMIN_PRIVATE_KEY}
 
   build-prod:
     working_directory: ~/protocol-dashboard
@@ -175,12 +173,14 @@ workflows:
           requires:
             - init
       - deploy-staging:
-          context: Audius Client
+          context:
+            - Audius Client
+            - Armada
           requires:
             - build-staging
-          filters:
-            branches:
-              only: /^main$/
+          # filters:
+          #   branches:
+          #     only: /^main$/
       - build-prod:
           requires:
             - init
