@@ -89,6 +89,7 @@ export function toChecksumAddress(this: AudiusClient, wallet: string) {
   return web3.utils.toChecksumAddress(wallet)
 }
 
+
 // Static Helpers
 export function getBNPercentage(
   n1: BigNumber,
@@ -177,4 +178,10 @@ export async function getContentNodeMetadata(
     // Try legacy method:
     return await getNodeMetadata(endpoint)
   }
+}
+
+export function decodeCallData(types: string[], callData: string) {
+  // TODO: Like methods above and throughout, move to better pattern
+  const web3 = window.audiusLibs.ethWeb3Manager.web3
+  return web3.eth.abi.decodeParameters(types, callData)
 }
