@@ -191,6 +191,9 @@ export function decodeProposalCallData(proposal: Proposal) {
   const functionName = signatureSplit?.[0]
 
   const types = signatureSplit?.[1]?.split(')')?.[0]?.split(',')
+  if (!types) {
+    return null
+  }
   const decoded: { [key: string]: string } = AudiusClient.decodeCallData(
     types,
     proposal.callData

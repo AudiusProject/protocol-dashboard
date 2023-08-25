@@ -52,7 +52,7 @@ const Proposal: React.FC<ProposalProps> = (props: ProposalProps) => {
   const { proposal } = useProposal(proposalId)
   const { votesFor, votesAgainst } = useVotes(proposalId)
   const { userVote } = useUserVote(proposalId)
-  const [callData, setCallData] = useState('')
+  const [callData, setCallData] = useState<string | null>(null)
 
   const title = proposal
     ? proposal.outcome === Outcome.InProgress
@@ -119,7 +119,7 @@ const Proposal: React.FC<ProposalProps> = (props: ProposalProps) => {
             </div>
             <div className={styles.data}>
               <p className={styles.callDataSectionHeader}>{messages.data}</p>
-              <p className={styles.callDataSectionBody}>{callData}</p>
+              <p className={styles.callDataSectionBody}>{callData || ''}</p>
             </div>
           </div>
         ) : (
